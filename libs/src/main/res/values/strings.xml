@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">libs</string>
+    <string name="purchase_title">Purchase Screen</string>
+    <string name="loading_ads">Loading...</string>
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BannerAds">
+        <attr name="ba_adsUnitId" format="string"/>
+        <attr name="ba_autoLoad" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="PurchaseView">
+        <attr name="pv_layoutManager" format="enum">
+            <enum name="list" value="1"/>
+            <enum name="grid" value="2"/>
+        </attr>
+        <attr name="pv_spanCount" format="integer"/>
+        <attr name="pv_orientation" format="enum">
+            <enum name="vertical" value="1"/>
+            <enum name="horizontal" value="2"/>
+        </attr>
+        <attr name="subsLayoutResId" format="reference"/>
+        <attr name="inAppLayoutResId" format="reference"/>
+    </declare-styleable>
+</resources>
