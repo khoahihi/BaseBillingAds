@@ -184,6 +184,7 @@ object BillingManager {
             }
         }
 
+        checkOnClearTheSameItems()
         checkIsBilling()
         withContext(Dispatchers.Main) {
             listAvailableObserver.postValue(listAvailable)
@@ -356,6 +357,10 @@ object BillingManager {
                 }
             }
         }
+    }
+
+    private fun checkOnClearTheSameItems() {
+        listAvailable = listAvailable.distinctBy { it.productDetails.productId }.toMutableList()
     }
 
     /**
