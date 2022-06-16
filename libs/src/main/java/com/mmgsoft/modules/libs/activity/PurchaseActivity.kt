@@ -88,12 +88,24 @@ class PurchaseActivity : AppCompatActivity() {
             open(ctx, theme, colorHeader, colorTitle, layoutSubs, layoutInApp, null)
         }
 
-        fun open(ctx: Context, headerTitle: String) {
+        fun open(ctx: Context,
+                 headerTitle: String) {
             open(ctx, R.layout.item_purchase_subs_default, R.layout.item_purchase_inapp_default, headerTitle)
         }
 
-        fun open(ctx: Context, theme: ActionBarTheme, @ColorRes colorHeader: Int, @ColorRes colorTitle: Int) {
+        fun open(ctx: Context,
+                 theme: ActionBarTheme,
+                 @ColorRes colorHeader: Int,
+                 @ColorRes colorTitle: Int) {
             open(ctx, theme, colorHeader, colorTitle, R.layout.item_purchase_subs_default, R.layout.item_purchase_inapp_default)
+        }
+
+        fun open(ctx: Context,
+                 theme: ActionBarTheme,
+                 @ColorRes colorHeader: Int,
+                 @ColorRes colorTitle: Int,
+                 headerTitle: String) {
+            open(ctx, theme, colorHeader, colorTitle, R.layout.item_purchase_subs_default, R.layout.item_purchase_inapp_default, headerTitle)
         }
     }
 

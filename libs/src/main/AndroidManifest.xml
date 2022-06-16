@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application>
-        <activity android:name=".activity.PurchaseActivity"/>
+        <activity android:name=".activity.PurchaseActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
     </application>
 </manifest>
