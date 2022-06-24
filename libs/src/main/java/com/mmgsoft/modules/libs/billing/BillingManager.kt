@@ -12,7 +12,6 @@ import com.mmgsoft.modules.libs.billing.RetryPolicies.connectionRetryPolicy
 import com.mmgsoft.modules.libs.billing.RetryPolicies.resetConnectionRetryPolicyCounter
 import com.mmgsoft.modules.libs.billing.RetryPolicies.taskExecutionRetryPolicy
 import com.mmgsoft.modules.libs.helpers.AdsPrefs
-import com.mmgsoft.modules.libs.helpers.AdsPrefs.KEY_PREFS_IS_BILLING
 import com.mmgsoft.modules.libs.helpers.BillingLoadingState
 import com.mmgsoft.modules.libs.helpers.BillingLoadingStateEvent
 import com.mmgsoft.modules.libs.helpers.StateAfterBuy
@@ -114,7 +113,7 @@ object BillingManager {
              productSubsIds: List<String>,
              state: StateAfterBuy = StateAfterBuy.DISABLE,
              keyCloseAds: String) {
-        AdsConstant.keyCloseAds = keyCloseAds
+        AdsConstant.item1 = keyCloseAds
         init(context, productInAppIds, productSubsIds, state)
     }
 
@@ -193,18 +192,19 @@ object BillingManager {
 
     private fun checkIsBilling() {
         mAllProductDetails.map {
-            if(it.productId.contains(AdsConstant.keyCloseAds)) {
-                putIsBilling(true)
-                return@map
+            if(it.productId.contains(AdsConstant.item1)) {
+                putIsBilling(AdsPrefs.PREFS_BILLING_BUY_ITEM_1)
             }
 
-            putIsBilling(false)
+            if(it.productId.contains(AdsConstant.item2)) {
+                putIsBilling(AdsPrefs.PREFS_BILLING_BUY_ITEM_2)
+            }
         }
     }
 
-    private fun putIsBilling(isBilling: Boolean) {
+    private fun putIsBilling(key: String) {
         AdsApplication.instance?.let {
-            AdsPrefs.putBoolean(it, AdsPrefs.KEY_PREFS_IS_BILLING, isBilling)
+            AdsPrefs.putBoolean(it, key, true)
         }
     }
 

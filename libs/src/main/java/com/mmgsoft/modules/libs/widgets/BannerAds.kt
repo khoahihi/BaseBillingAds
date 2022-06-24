@@ -46,7 +46,7 @@ class BannerAds @JvmOverloads constructor(
     }
 
     private fun loadBanner(adsUnitId: String) {
-        if(!AdsConstant.isLoadAds(context)) {
+        if(AdsConstant.isBuyItem2(context)) {
             close()
             return
         }
@@ -57,7 +57,7 @@ class BannerAds @JvmOverloads constructor(
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         super.onVisibilityChanged(changedView, visibility)
-        if(!AdsConstant.isLoadAds(context)) {
+        if(AdsConstant.isBuyItem2(context)) {
             close()
         }
     }

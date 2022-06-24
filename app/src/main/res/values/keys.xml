@@ -2,4 +2,5 @@
 <resources>
     <string name="admob_appid">ca-app-pub-4973559944609228~1107567880</string>
     <string name="splash_id">ca-app-pub-3940256099942544/3419835294</string>
+    <string name="banner_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

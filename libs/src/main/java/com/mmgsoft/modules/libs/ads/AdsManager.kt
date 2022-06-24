@@ -37,7 +37,7 @@ class AdsManager {
     }
 
     private fun showInterstitialWithCount(act: Activity, adsUnitId: String, closeAd: () -> Unit) {
-        if(!AdsConstant.isLoadAds(act)) {
+        if(AdsConstant.isBuyItem1(act)) {
             closeAd.invoke()
             return
         }
@@ -58,7 +58,7 @@ class AdsManager {
     }
 
     fun forceShowInterstitial(act: Activity, adsUnitId: String, adClosed: () -> Unit) {
-        if(!AdsConstant.isLoadAds(act)) {
+        if(AdsConstant.isBuyItem1(act)) {
             adClosed.invoke()
             return
         }

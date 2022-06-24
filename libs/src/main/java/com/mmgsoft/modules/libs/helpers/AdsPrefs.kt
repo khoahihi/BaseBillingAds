@@ -4,7 +4,8 @@ import android.content.Context
 
 object AdsPrefs {
     const val ADS_PREFS_NAME = "ADS_PREFS_NAME"
-    const val KEY_PREFS_IS_BILLING = "KEY_PREFS_IS_BILLING"
+    const val PREFS_BILLING_BUY_ITEM_1 = "PREFS_BILLING_BUY_ITEM_1"
+    const val PREFS_BILLING_BUY_ITEM_2 = "PREFS_BILLING_BUY_ITEM_2"
 
     private fun getPrefs(ctx: Context) = ctx.getSharedPreferences(ADS_PREFS_NAME, Context.MODE_PRIVATE)
 
