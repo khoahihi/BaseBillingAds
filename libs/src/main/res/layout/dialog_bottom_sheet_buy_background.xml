@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="@dimen/_6sdp"
+    app:cardCornerRadius="0dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="false"
+    android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_10sdp">
+        <LinearLayout
+            android:id="@+id/lnHeader"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:paddingTop="@dimen/_10sdp">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPrice"
+                tools:text="100.000 VND"
+                android:textSize="@dimen/_15sdp"
+                android:textColor="#22A828"
+                app:fontFamily="@font/noto_sans_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Background mua he"
+                android:textSize="@dimen/_10sdp"
+                app:fontFamily="@font/noto_sans_semi_bold"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.6dp"
+                android:background="#CFCFCF"
+                android:layout_marginTop="@dimen/_8sdp"/>
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guiEnd"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintGuide_percent="0.75"
+            android:orientation="vertical"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guiStart"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintGuide_percent="0.25"
+            android:orientation="vertical"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardBackground"
+            app:layout_constraintTop_toBottomOf="@+id/lnHeader"
+            app:layout_constraintStart_toStartOf="@+id/guiStart"
+            app:layout_constraintEnd_toEndOf="@+id/guiEnd"
+            app:layout_constraintDimensionRatio="h, 9:16"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginStart="@dimen/_6sdp"
+            app:cardUseCompatPadding="true"
+            app:cardPreventCornerOverlap="true"
+            app:cardCornerRadius="@dimen/_6sdp"
+            app:cardElevation="@dimen/_2sdp"
+            android:layout_width="0dp"
+            android:layout_height="0dp">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imBackground"
+                android:src="@drawable/img_background_10"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnBuyNow"
+            app:layout_constraintTop_toBottomOf="@+id/cardBackground"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="@dimen/_3sdp"
+            app:cardCornerRadius="@dimen/_6sdp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true"
+            app:cardBackgroundColor="#EF5C8E">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Buy now"
+                android:textSize="@dimen/_11sdp"
+                android:textColor="@color/white"
+                app:fontFamily="@font/noto_sans_semi_bold"
+                android:padding="@dimen/_8sdp"/>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

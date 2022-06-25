@@ -1,27 +1,46 @@
 package com.mmgsoft.mmgbaseadsmodule
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import com.mmgsoft.modules.libs.AdsApplication
-import com.mmgsoft.modules.libs.AdsConstant
-import com.mmgsoft.modules.libs.billing.BillingManager
-import com.mmgsoft.modules.libs.helpers.AdsPrefs
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import com.mmgsoft.modules.libs.activity.ChangeBackgroundActivity
+import com.mmgsoft.modules.libs.manager.AssetManager
+import com.mmgsoft.modules.libs.manager.BackgroundManager
+import com.mmgsoft.modules.libs.manager.MoneyManager
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    private val imBackground: ImageView by lazy {
+        findViewById(R.id.imBackground)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        btnBuyItem1.setOnClickListener {
-            AdsApplication.instance?.let {
-                AdsPrefs.putBoolean(it, AdsPrefs.PREFS_BILLING_BUY_ITEM_1, true)
+        BackgroundManager.getBackground {
+            AssetManager.loadBitmap(it.backgroundPath) {
+                imBackground.setImageBitmap(it)
             }
         }
 
-        btnBuyItem2.setOnClickListener {
-            AdsApplication.instance?.let {
-                AdsPrefs.putBoolean(it, AdsPrefs.PREFS_BILLING_BUY_ITEM_2, true)
+        btnBuyItem1.setOnClickListener {
+            MoneyManager.buyBilling("100$", {}, {})
+        }
+
+        btnChangeBackground.setOnClickListener {
+            startActivityForResult(Intent(this, ChangeBackgroundActivity::class.java), 111)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 111) {
+            BackgroundManager.getBackground {
+                AssetManager.loadBitmap(it.backgroundPath) {
+                    imBackground.setImageBitmap(it)
+                }
             }
         }
     }

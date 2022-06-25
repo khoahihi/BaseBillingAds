@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.android.billingclient.api.*
 import com.mmgsoft.modules.libs.AdsApplication
-import com.mmgsoft.modules.libs.AdsConstant
 import com.mmgsoft.modules.libs.billing.RetryPolicies.connectionRetryPolicy
 import com.mmgsoft.modules.libs.billing.RetryPolicies.resetConnectionRetryPolicyCounter
 import com.mmgsoft.modules.libs.billing.RetryPolicies.taskExecutionRetryPolicy
@@ -16,6 +15,9 @@ import com.mmgsoft.modules.libs.helpers.BillingLoadingState
 import com.mmgsoft.modules.libs.helpers.BillingLoadingStateEvent
 import com.mmgsoft.modules.libs.helpers.StateAfterBuy
 import com.mmgsoft.modules.libs.models.PurchaseProductDetails
+import com.mmgsoft.modules.libs.utils.Config
+import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_1
+import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_2
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 
@@ -112,8 +114,8 @@ object BillingManager {
              productInAppIds: List<String>,
              productSubsIds: List<String>,
              state: StateAfterBuy = StateAfterBuy.DISABLE,
-             keyCloseAds: String) {
-        AdsConstant.item1 = keyCloseAds
+             item1: String, item2: String) {
+        Config.updateItem1(item1).updateItem2(item2)
         init(context, productInAppIds, productSubsIds, state)
     }
 
@@ -192,20 +194,18 @@ object BillingManager {
 
     private fun checkIsBilling() {
         mAllProductDetails.map {
-            if(it.productId.contains(AdsConstant.item1)) {
-                putIsBilling(AdsPrefs.PREFS_BILLING_BUY_ITEM_1)
+            if(it.productId.contains(Config.item1)) {
+                putIsBilling(PREFS_BILLING_BUY_ITEM_1)
             }
 
-            if(it.productId.contains(AdsConstant.item2)) {
-                putIsBilling(AdsPrefs.PREFS_BILLING_BUY_ITEM_2)
+            if(it.productId.contains(Config.item2)) {
+                putIsBilling(PREFS_BILLING_BUY_ITEM_2)
             }
         }
     }
 
     private fun putIsBilling(key: String) {
-        AdsApplication.instance?.let {
-            AdsPrefs.putBoolean(it, key, true)
-        }
+        AdsApplication.prefs.putBoolean(key, true)
     }
 
     /**
@@ -386,6 +386,10 @@ object BillingManager {
         }
         return iSupported
     }
+
+    fun isBuyItem1() = AdsApplication.prefs.isBuyItem1()
+
+    fun isBuyItem2() = AdsApplication.prefs.isBuyItem2()
 
     private fun List<ProductDetails>.mapToPurchaseProdDetails() = map {
         PurchaseProductDetails(false, it)

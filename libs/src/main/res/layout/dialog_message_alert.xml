@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/_8sdp"
+    android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+    android:background="@drawable/bg_dialog">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/_10sdp"
+        android:text="Notify"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12sdp"
+        app:fontFamily="@font/noto_sans_semi_bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.36dp"
+        android:background="#959595" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/_12sdp"
+        android:textSize="@dimen/_11sdp"
+        app:fontFamily="@font/noto_sans_regular"
+        tools:text="Description" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#EF5C8E"
+        app:cardCornerRadius="@dimen/_6sdp"
+        app:cardElevation="@dimen/_3sdp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/_24sdp"
+            android:gravity="center"
+            android:padding="@dimen/_8sdp"
+            android:text="Close"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_11sdp"
+            app:fontFamily="@font/noto_sans_semi_bold" />
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

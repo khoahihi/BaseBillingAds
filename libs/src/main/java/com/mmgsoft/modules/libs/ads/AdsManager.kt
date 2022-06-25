@@ -12,10 +12,13 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.mmgsoft.modules.libs.AdsConstant
+import com.mmgsoft.modules.libs.billing.BillingManager
+import com.mmgsoft.modules.libs.billing.BillingManager.isBuyItem1
 import com.mmgsoft.modules.libs.dialog.PrepareLoadingAdsDialog
 import com.mmgsoft.modules.libs.etx.gone
 import com.mmgsoft.modules.libs.etx.visible
+import com.mmgsoft.modules.libs.helpers.AdsPrefs
+import com.mmgsoft.modules.libs.utils.NetworkUtils
 
 class AdsManager {
     var currentClicked = 0
@@ -37,7 +40,7 @@ class AdsManager {
     }
 
     private fun showInterstitialWithCount(act: Activity, adsUnitId: String, closeAd: () -> Unit) {
-        if(AdsConstant.isBuyItem1(act)) {
+        if(isBuyItem1() || !NetworkUtils.isNetworkAvailable(act)) {
             closeAd.invoke()
             return
         }
@@ -58,7 +61,7 @@ class AdsManager {
     }
 
     fun forceShowInterstitial(act: Activity, adsUnitId: String, adClosed: () -> Unit) {
-        if(AdsConstant.isBuyItem1(act)) {
+        if(isBuyItem1() || !NetworkUtils.isNetworkAvailable(act)) {
             adClosed.invoke()
             return
         }
@@ -93,6 +96,10 @@ class AdsManager {
                         adContainer: FrameLayout,
                         shimmerFrameLayout: ShimmerFrameLayout,
                         onLoadFailed: () -> Unit) {
+        if(!NetworkUtils.isNetworkAvailable(context)) {
+            onLoadFailed.invoke()
+            return
+        }
         shimmerFrameLayout.visible()
         shimmerFrameLayout.startShimmer()
 

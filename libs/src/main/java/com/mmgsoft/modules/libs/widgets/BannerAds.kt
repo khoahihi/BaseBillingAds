@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import com.mmgsoft.modules.libs.AdsConstant
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.ads.AdsManager
+import com.mmgsoft.modules.libs.billing.BillingManager
+import com.mmgsoft.modules.libs.billing.BillingManager.isBuyItem2
+import com.mmgsoft.modules.libs.helpers.AdsPrefs
 
 class BannerAds @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -46,7 +48,7 @@ class BannerAds @JvmOverloads constructor(
     }
 
     private fun loadBanner(adsUnitId: String) {
-        if(AdsConstant.isBuyItem2(context)) {
+        if(isBuyItem2()) {
             close()
             return
         }
@@ -57,7 +59,7 @@ class BannerAds @JvmOverloads constructor(
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         super.onVisibilityChanged(changedView, visibility)
-        if(AdsConstant.isBuyItem2(context)) {
+        if(isBuyItem2()) {
             close()
         }
     }

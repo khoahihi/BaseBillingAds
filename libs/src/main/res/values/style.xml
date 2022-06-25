@@ -17,4 +17,9 @@
         <item name="android:minHeight">15.0px</item>
         <item name="android:text">Ad</item>
     </style>
+
+    <style name="Theme_Dialog" parent="android:Theme.Holo.Dialog.NoActionBar">
+        <item name="android:windowMinWidthMajor">80%</item>
+        <item name="android:windowMinWidthMinor">80%</item>
+    </style>
 </resources>
