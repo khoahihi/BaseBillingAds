@@ -1,4 +1,4 @@
-package com.mmgsoft.modules.libs.activity
+package com.mmgsoft.modules.libs.base
 
 import android.os.Bundle
 import android.widget.Toast

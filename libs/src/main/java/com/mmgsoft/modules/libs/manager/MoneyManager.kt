@@ -2,7 +2,7 @@ package com.mmgsoft.modules.libs.manager
 
 import com.mmgsoft.modules.libs.AdsApplication
 import com.mmgsoft.modules.libs.models.Background
-import com.mmgsoft.modules.libs.utils.Config
+import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.PREFS_MONEY
 import java.text.NumberFormat
 import java.util.*
@@ -17,7 +17,7 @@ object MoneyManager {
         numberFormat.maximumFractionDigits = 0
         numberFormat.currency = Currency.getInstance(Locale.US)
         return numberFormat.parse(money)?.let {
-            it.toDouble() * Config.exchangeRate
+            it.toDouble() * AdsComponentConfig.exchangeRate
         } ?: 0.0
     }
 
@@ -26,7 +26,7 @@ object MoneyManager {
      */
     fun getCurrentGoldStr(): String {
         val money = prefs.getDouble(PREFS_MONEY)
-        return "$money ${Config.currency}"
+        return "$money ${AdsComponentConfig.currency}"
     }
 
     /**

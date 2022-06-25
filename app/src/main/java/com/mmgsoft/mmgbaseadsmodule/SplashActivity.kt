@@ -9,8 +9,10 @@ import com.mmgsoft.mmgbaseadsmodule.R
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        BaseModuleApplication.instance.adsManager.forceShowInterstitial(this, getString(R.string.splash_id)) {
-            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-        }
+        startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+        finish()
+//        BaseModuleApplication.instance.adsManager.forceShowInterstitial(this, getString(R.string.splash_id)) {
+//            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+//        }
     }
 }

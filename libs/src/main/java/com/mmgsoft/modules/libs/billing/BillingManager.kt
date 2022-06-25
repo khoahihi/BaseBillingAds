@@ -10,12 +10,11 @@ import com.mmgsoft.modules.libs.AdsApplication
 import com.mmgsoft.modules.libs.billing.RetryPolicies.connectionRetryPolicy
 import com.mmgsoft.modules.libs.billing.RetryPolicies.resetConnectionRetryPolicyCounter
 import com.mmgsoft.modules.libs.billing.RetryPolicies.taskExecutionRetryPolicy
-import com.mmgsoft.modules.libs.helpers.AdsPrefs
 import com.mmgsoft.modules.libs.helpers.BillingLoadingState
 import com.mmgsoft.modules.libs.helpers.BillingLoadingStateEvent
 import com.mmgsoft.modules.libs.helpers.StateAfterBuy
 import com.mmgsoft.modules.libs.models.PurchaseProductDetails
-import com.mmgsoft.modules.libs.utils.Config
+import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_1
 import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_2
 import kotlinx.coroutines.*
@@ -115,7 +114,7 @@ object BillingManager {
              productSubsIds: List<String>,
              state: StateAfterBuy = StateAfterBuy.DISABLE,
              item1: String, item2: String) {
-        Config.updateItem1(item1).updateItem2(item2)
+        AdsComponentConfig.updateItem1(item1).updateItem2(item2)
         init(context, productInAppIds, productSubsIds, state)
     }
 
@@ -194,11 +193,11 @@ object BillingManager {
 
     private fun checkIsBilling() {
         mAllProductDetails.map {
-            if(it.productId.contains(Config.item1)) {
+            if(it.productId.contains(AdsComponentConfig.item1)) {
                 putIsBilling(PREFS_BILLING_BUY_ITEM_1)
             }
 
-            if(it.productId.contains(Config.item2)) {
+            if(it.productId.contains(AdsComponentConfig.item2)) {
                 putIsBilling(PREFS_BILLING_BUY_ITEM_2)
             }
         }

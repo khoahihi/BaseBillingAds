@@ -14,7 +14,14 @@ import kotlinx.coroutines.*
 object AssetManager {
     fun loadListFilesOfAsset(ctx: Context, path: String): List<String> {
         val items = ctx.assets.list(path)
-        return items?.toList() ?: listOf()
+        val newItems = mutableListOf<String>()
+        items?.map {
+            if(it.endsWith(ImageFileType.PNG.type) || it.endsWith(ImageFileType.JPG.type)
+                || it.endsWith(ImageFileType.JPEG.type) || it.endsWith(ImageFileType.WEBP.type)) {
+                newItems.add(it)
+            }
+        }
+        return newItems.toList()
     }
 
     fun loadBitmap(path: String, doWork: (Bitmap) -> Unit) = CoroutineScope(Dispatchers.IO).launch {
@@ -25,5 +32,12 @@ object AssetManager {
         withContext(Dispatchers.Main) {
             doWork.invoke(br)
         }
+    }
+
+    private enum class ImageFileType(val type: String) {
+        PNG("png"),
+        JPG("jpg"),
+        JPEG("jpeg"),
+        WEBP("webp")
     }
 }

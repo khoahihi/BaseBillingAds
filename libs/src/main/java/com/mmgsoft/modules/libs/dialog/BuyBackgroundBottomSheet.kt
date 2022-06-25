@@ -12,7 +12,7 @@ import com.google.android.material.card.MaterialCardView
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.manager.AssetManager
 import com.mmgsoft.modules.libs.models.Background
-import com.mmgsoft.modules.libs.utils.Config
+import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 
 class BuyBackgroundBottomSheet(
     private val background: Background,
@@ -46,7 +46,7 @@ class BuyBackgroundBottomSheet(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         background.apply {
-            tvPrice.text = "$price ${Config.currency}"
+            tvPrice.text = "$price ${AdsComponentConfig.currency}"
             tvDescription.text = description
             AssetManager.loadBitmap(backgroundPath) {
                 imBackground.setImageBitmap(it)

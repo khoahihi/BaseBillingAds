@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.mmgsoft.modules.libs.R
+import com.mmgsoft.modules.libs.base.BaseActivity
 import com.mmgsoft.modules.libs.billing.BillingManager
 import com.mmgsoft.modules.libs.etx.setStatusBarColor
 import com.mmgsoft.modules.libs.etx.setStatusBarTextColorDark
@@ -26,7 +27,7 @@ import kotlinx.android.synthetic.main.view_purchase.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class PurchaseActivity : AppCompatActivity() {
+class PurchaseActivity : BaseActivity() {
     private val tvTitle by lazy {
         findViewById<TextView>(R.id.tvPurchaseTitle)
     }
@@ -109,19 +110,20 @@ class PurchaseActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_libs_purchase)
+    override val layoutResId: Int
+        get() = R.layout.activity_libs_purchase
+
+    override fun initViews() {
         registerEvents()
         setupHeaderColor()
         setupHeaderTitle()
         setupPurchaseLayout()
-        initViews()
+        observablePurchase()
         initActions()
+        reInitPurchaseItems()
     }
 
-    private fun initViews() {
-        reInitPurchaseItems()
+    private fun observablePurchase() {
         BillingManager.listAvailableObserver.observe(this, Observer {
             reInitPurchaseItems()
             if(BillingManager.state == StateAfterBuy.REMOVE) {

@@ -2,6 +2,8 @@ package com.mmgsoft.modules.libs.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.TextView
 import com.google.android.material.card.MaterialCardView
@@ -21,6 +23,7 @@ class AlertMessageDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         setContentView(R.layout.dialog_message_alert)
         tvDescription.text = msg
         btnClose.setOnClickListener {

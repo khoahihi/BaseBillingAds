@@ -1,7 +1,7 @@
 package com.mmgsoft.mmgbaseadsmodule
 
 import com.mmgsoft.modules.libs.AdsApplication
-import com.mmgsoft.modules.libs.utils.Config
+import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 
 class BaseModuleApplication : AdsApplication() {
     override val testDevices: List<String>
@@ -14,7 +14,10 @@ class BaseModuleApplication : AdsApplication() {
         get() = listOf()
 
     override fun onCreated() {
-        Config.updateCurrency("POINT")
+        AdsComponentConfig
+            .updateCurrency("GOLD")
+            .loadAssetsFromMyApp(this, "")
+            .addBackgroundPrice("10", "100", "50", "20", "15", "60")
         instance = this
     }
 
