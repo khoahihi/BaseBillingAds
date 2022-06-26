@@ -65,6 +65,10 @@ class ChangeBackgroundActivity : BaseActivity() {
         findViewById(R.id.imBack)
     }
 
+    private val tvCurrency: TextView by lazy {
+        findViewById(R.id.tvCurrency)
+    }
+
     override fun initViews() {
         setStatusBarColor(R.color.white)
         setStatusBarTextColorDark()
@@ -140,7 +144,8 @@ class ChangeBackgroundActivity : BaseActivity() {
     }
 
     private fun updateCurrentMoney() {
-        tvGold.text = MoneyManager.getCurrentGoldStr()
+        tvGold.text = MoneyManager.getCurrentGold().toString()
+        tvCurrency.text = AdsComponentConfig.currency
     }
 
     private fun getBackgrounds() = AssetManager.loadListFilesOfAsset(

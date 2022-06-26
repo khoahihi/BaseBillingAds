@@ -252,28 +252,26 @@ object BillingManager {
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
         when (billingResult.responseCode) {
             BillingClient.BillingResponseCode.OK -> {
-                // will handle server verification, consumables, and updating the local cache
                 /**
                  * Thanh toán thành công, purchases là thông tin đơn hàng vừa thanh toán
                  */
                 purchases?.map { purchase ->
                     purchase.products.map { productId ->
-                        mAllProductDetails.find { it.productId == productId }?.let { productDetail ->
-                            if(productDetail.productType == BillingClient.ProductType.INAPP) {
-                                productDetail.oneTimePurchaseOfferDetails?.formattedPrice?.let { money ->
-                                    MoneyManager.addMoney(money)
-                                }
-                            } else {
-                                productDetail.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice?.let { money ->
-                                    MoneyManager.addMoney(money)
+                        if(productId.contains(AdsComponentConfig.consumeKey)) {
+                            mAllProductDetails.find { it.productId == productId }?.let { productDetail ->
+                                if(productDetail.productType == BillingClient.ProductType.INAPP) {
+                                    productDetail.oneTimePurchaseOfferDetails?.formattedPrice?.let { money ->
+                                        MoneyManager.addMoney(money)
+                                    }
+                                } else {
+                                    productDetail.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice?.let { money ->
+                                        MoneyManager.addMoney(money)
+                                    }
                                 }
                             }
                         }
-//                        newProductsId.add(AdsPrefs.Pair.create(productId, false))
                     }
                 }
-//                prefs.addProductsIdWasPaid(newProductsId)
-//                prefs.checkBillingOnAddMoney(mAllItemWasPaid)
                 purchases?.apply { handlePurchases(this.toSet()) }
                 EventBus.getDefault().postSticky(BillingLoadingStateEvent(BillingLoadingState.SHOW_LOADING))
             }

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">libs</string>
     <string name="purchase_title">Purchase Screen</string>
-    <string name="change_background">Change Background Screen</string>
+    <string name="change_background">Backgrounds</string>
     <string name="select">SELECT</string>
     <string name="buy">BUY</string>
     <string name="loading_ads">Loading...</string>

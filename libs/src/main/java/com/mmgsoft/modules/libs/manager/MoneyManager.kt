@@ -35,7 +35,7 @@ object MoneyManager {
     /**
      * Lấy số tiền hiện tại đang có
      */
-    private fun getCurrentGold(): Double {
+    fun getCurrentGold(): Double {
         return prefs.getDouble(PREFS_MONEY)
     }
 
