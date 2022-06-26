@@ -12,6 +12,9 @@ object MoneyManager {
         AdsApplication.prefs
     }
 
+    /**
+     * Chuyển từ tiền DOLLAR sang loại tiền của app
+     */
     private fun exchange(money: String): Double {
         val numberFormat = NumberFormat.getInstance()
         numberFormat.maximumFractionDigits = 0
@@ -39,11 +42,9 @@ object MoneyManager {
     /**
      * Thực hiện cộng tiền khi billing thành công
      */
-    fun buyBilling(money: String, onBuySuccess: () -> Unit, onBuyFailed: () -> Unit) {
+    fun addMoney(money: String): Boolean {
         val newMoney = exchange(money)
-        if(prefs.putDouble(PREFS_MONEY, newMoney + getCurrentGold())) {
-            onBuySuccess.invoke()
-        } else onBuyFailed.invoke()
+        return prefs.putDouble(PREFS_MONEY, newMoney + getCurrentGold())
     }
 
     /**

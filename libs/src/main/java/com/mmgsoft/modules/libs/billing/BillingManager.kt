@@ -10,9 +10,11 @@ import com.mmgsoft.modules.libs.AdsApplication
 import com.mmgsoft.modules.libs.billing.RetryPolicies.connectionRetryPolicy
 import com.mmgsoft.modules.libs.billing.RetryPolicies.resetConnectionRetryPolicyCounter
 import com.mmgsoft.modules.libs.billing.RetryPolicies.taskExecutionRetryPolicy
+import com.mmgsoft.modules.libs.helpers.AdsPrefs
 import com.mmgsoft.modules.libs.helpers.BillingLoadingState
 import com.mmgsoft.modules.libs.helpers.BillingLoadingStateEvent
 import com.mmgsoft.modules.libs.helpers.StateAfterBuy
+import com.mmgsoft.modules.libs.manager.MoneyManager
 import com.mmgsoft.modules.libs.models.PurchaseProductDetails
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_1
@@ -35,6 +37,10 @@ object BillingManager {
     var validPurchases = HashSet<Purchase>()
     var skuHistoryList = listOf<PurchaseHistoryRecord>()
     var state = StateAfterBuy.DISABLE
+
+    private val prefs by lazy {
+        AdsApplication.prefs
+    }
 
     private const val TAG = "BillingManager"
 
@@ -167,7 +173,6 @@ object BillingManager {
             purchasesResult.map { purchase ->
                 clearItemsWhenProdIds(purchase.products)
             }
-
         }
         taskExecutionRetryPolicy(mBillingClient, billingConnectListener) { task() }
     }
@@ -176,7 +181,9 @@ object BillingManager {
         productIds.map { productId ->
             val product = listAvailable.firstOrNull { it.productDetails.productId == productId }
             if(state == StateAfterBuy.DISABLE) {
-                product?.isBuy = true
+                product?.apply {
+                    isBuy = true
+                }
             } else {
                 product?.let { productDetail ->
                     listAvailable.remove(productDetail)
@@ -249,6 +256,24 @@ object BillingManager {
                 /**
                  * Thanh toán thành công, purchases là thông tin đơn hàng vừa thanh toán
                  */
+                purchases?.map { purchase ->
+                    purchase.products.map { productId ->
+                        mAllProductDetails.find { it.productId == productId }?.let { productDetail ->
+                            if(productDetail.productType == BillingClient.ProductType.INAPP) {
+                                productDetail.oneTimePurchaseOfferDetails?.formattedPrice?.let { money ->
+                                    MoneyManager.addMoney(money)
+                                }
+                            } else {
+                                productDetail.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice?.let { money ->
+                                    MoneyManager.addMoney(money)
+                                }
+                            }
+                        }
+//                        newProductsId.add(AdsPrefs.Pair.create(productId, false))
+                    }
+                }
+//                prefs.addProductsIdWasPaid(newProductsId)
+//                prefs.checkBillingOnAddMoney(mAllItemWasPaid)
                 purchases?.apply { handlePurchases(this.toSet()) }
                 EventBus.getDefault().postSticky(BillingLoadingStateEvent(BillingLoadingState.SHOW_LOADING))
             }
@@ -386,9 +411,9 @@ object BillingManager {
         return iSupported
     }
 
-    fun isBuyItem1() = AdsApplication.prefs.isBuyItem1()
+    fun isBuyItem1() = prefs.isBuyItem1()
 
-    fun isBuyItem2() = AdsApplication.prefs.isBuyItem2()
+    fun isBuyItem2() = prefs.isBuyItem2()
 
     private fun List<ProductDetails>.mapToPurchaseProdDetails() = map {
         PurchaseProductDetails(false, it)

@@ -14,11 +14,14 @@ class BaseModuleApplication : AdsApplication() {
         get() = listOf()
 
     override fun onCreated() {
+        instance = this
+    }
+
+    override fun addConfig() {
         AdsComponentConfig
             .updateCurrency("GOLD")
             .loadAssetsFromMyApp(this, "")
             .addBackgroundPrice("10", "100", "50", "20", "15", "60")
-        instance = this
     }
 
     companion object {

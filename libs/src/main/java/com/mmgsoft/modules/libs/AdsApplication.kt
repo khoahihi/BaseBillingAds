@@ -16,13 +16,19 @@ abstract class AdsApplication : Application() {
     protected abstract val prodSubsIds: List<String>
 
     protected abstract fun onCreated()
-
     protected open fun getStateBilling() = StateAfterBuy.DISABLE
+
+    /**
+     * Thực hiện thêm cấu hình cho Library
+     * AdsComponentConfig.(...)
+     */
+    protected open fun addConfig() {}
 
     override fun onCreate() {
         super.onCreate()
         instance = this
         prefs = AdsPrefs()
+        addConfig()
         BillingManager.init(this, prodInAppIds, prodSubsIds, getStateBilling())
         onCreated()
     }

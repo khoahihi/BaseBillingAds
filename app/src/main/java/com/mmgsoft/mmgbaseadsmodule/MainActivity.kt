@@ -17,7 +17,7 @@ class MainActivity : BaseAutoBackgroundActivity() {
 
     override fun initViews() {
         btnBuyItem1.setOnClickListener {
-            MoneyManager.buyBilling("100$", {}, {})
+            MoneyManager.addMoney("100$")
         }
 
         btnChangeBackground.setOnClickListener {

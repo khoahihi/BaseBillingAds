@@ -12,6 +12,10 @@ import com.mmgsoft.modules.libs.models.Background
 import kotlinx.coroutines.*
 
 object AssetManager {
+    /**
+     * Thực hiện lấy danh sách đường dẫn ảnh trong folder
+     * @param path: Đường dẫn của danh sách ảnh
+     */
     fun loadListFilesOfAsset(ctx: Context, path: String): List<String> {
         val items = ctx.assets.list(path)
         val newItems = mutableListOf<String>()
@@ -24,6 +28,10 @@ object AssetManager {
         return newItems.toList()
     }
 
+    /**
+     * Thực hiện load ảnh từ assets file
+     * resize ảnh để tăng performance
+     */
     fun loadBitmap(path: String, doWork: (Bitmap) -> Unit) = CoroutineScope(Dispatchers.IO).launch {
         val ims = AdsApplication.instance.assets.open(path)
         val d = Drawable.createFromStream(ims, null)
@@ -34,6 +42,9 @@ object AssetManager {
         }
     }
 
+    /**
+     * Các loại ảnh được support hiện tại
+     */
     private enum class ImageFileType(val type: String) {
         PNG("png"),
         JPG("jpg"),

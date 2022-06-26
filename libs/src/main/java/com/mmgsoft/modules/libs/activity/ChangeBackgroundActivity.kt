@@ -19,6 +19,8 @@ import com.mmgsoft.modules.libs.manager.BackgroundManager.getWasPaidBackgrounds
 import com.mmgsoft.modules.libs.manager.MoneyManager
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
+import com.mmgsoft.modules.libs.utils.START_WITH_DESCRIPTION
+import com.mmgsoft.modules.libs.utils.START_WITH_PRODUCT_ID
 import de.hdodenhof.circleimageview.CircleImageView
 
 class ChangeBackgroundActivity : BaseActivity() {
@@ -102,16 +104,16 @@ class ChangeBackgroundActivity : BaseActivity() {
                 mBackgroundAdapter.updateSelected(background, false)
             } else if (BackgroundManager.saveBackgroundSelected(background)) {
                 mBackgroundAdapter.updateSelected(background)
-            } else showAlertMessage("Change Background Failed")
+            } else showAlertMessage(getString(R.string.change_background_failed))
         } else {
             BuyBackgroundBottomSheet(background) {
                 if(MoneyManager.buyBackground(background)) {
                     if(addWasPaidBackground(background)) {
                         mBackgroundAdapter.updateBilling(background)
                         updateCurrentMoney()
-                        showToast("Buy success")
-                    } else showAlertMessage("Not enough money")
-                } else showAlertMessage("Not enough money")
+                        showToast(getString(R.string.buy_success))
+                    } else showAlertMessage(getString(R.string.not_enough_money))
+                } else showAlertMessage(getString(R.string.not_enough_money))
             }.show(supportFragmentManager, null)
         }
     }
@@ -144,7 +146,11 @@ class ChangeBackgroundActivity : BaseActivity() {
     private fun getBackgrounds() = AssetManager.loadListFilesOfAsset(
         AdsComponentConfig.otherAppContext, AdsComponentConfig.assetsPath).mapIndexed { index, s ->
         val p = index + 1
-        Background(getBackgroundPrice(index), "item_$s", "background $p", getBackgroundPath(AdsComponentConfig.assetsPath, s), false)
+        Background(
+            getBackgroundPrice(index),
+            "$START_WITH_PRODUCT_ID$s",
+            "$START_WITH_DESCRIPTION$p",
+            getBackgroundPath(AdsComponentConfig.assetsPath, s), false)
     }
 
     private fun getBackgroundPrice(index: Int): String {
