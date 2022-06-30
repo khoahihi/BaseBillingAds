@@ -11,5 +11,8 @@
 
         <activity android:name=".activity.ChangeBackgroundActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+
+        <activity android:name=".amzbiling.AmazonIapActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
     </application>
 </manifest>

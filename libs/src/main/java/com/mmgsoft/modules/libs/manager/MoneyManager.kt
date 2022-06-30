@@ -15,12 +15,12 @@ object MoneyManager {
     /**
      * Chuyển từ tiền DOLLAR sang loại tiền của app
      */
-    private fun exchange(money: String): Double {
+    private fun exchange(money: String, rate: Double = AdsComponentConfig.exchangeRate): Double {
         val numberFormat = NumberFormat.getInstance()
         numberFormat.maximumFractionDigits = 0
         numberFormat.currency = Currency.getInstance(Locale.US)
         return numberFormat.parse(money)?.let {
-            it.toDouble() * AdsComponentConfig.exchangeRate
+            it.toDouble() * rate
         } ?: 0.0
     }
 
@@ -42,8 +42,8 @@ object MoneyManager {
     /**
      * Thực hiện cộng tiền khi billing thành công
      */
-    fun addMoney(money: String): Boolean {
-        val newMoney = exchange(money)
+    fun addMoney(money: String, rate: Double = AdsComponentConfig.exchangeRate): Boolean {
+        val newMoney = exchange(money, rate)
         return prefs.putDouble(PREFS_MONEY, newMoney + getCurrentGold())
     }
 

@@ -210,7 +210,7 @@ object BillingManager {
         }
     }
 
-    private fun putIsBilling(key: String) {
+    fun putIsBilling(key: String) {
         AdsApplication.prefs.putBoolean(key, true)
     }
 

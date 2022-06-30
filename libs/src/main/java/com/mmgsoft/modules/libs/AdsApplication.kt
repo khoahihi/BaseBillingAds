@@ -11,16 +11,17 @@ import com.mmgsoft.modules.libs.data.local.db.DbHelper
 import com.mmgsoft.modules.libs.helpers.AdsPrefs
 import com.mmgsoft.modules.libs.helpers.BillingType
 import com.mmgsoft.modules.libs.helpers.StateAfterBuy
+import com.mmgsoft.modules.libs.utils.AdsComponentConfig
+import com.mmgsoft.modules.libs.utils.AdsComponentConfig.testDevices
 
 abstract class AdsApplication : Application() {
     val adsManager by lazy {
         AdsManager().initAdsManager(this, testDevices.toMutableList())
     }
 
-    protected abstract val testDevices: List<String>
-    protected abstract val prodInAppIds: List<String>
-    protected abstract val prodSubsIds: List<String>
-    protected abstract val billingType: BillingType
+    abstract val prodInAppIds: List<String>
+    abstract val prodSubsIds: List<String>
+    abstract val billingType: BillingType
 
     protected abstract fun onCreated()
     protected open fun getStateBilling() = StateAfterBuy.DISABLE
@@ -30,6 +31,7 @@ abstract class AdsApplication : Application() {
      * AdsComponentConfig.(...)
      */
     protected open fun addConfig() {}
+
     var dbHelper: DbHelper? = null
     override fun onCreate() {
         super.onCreate()
@@ -39,6 +41,7 @@ abstract class AdsApplication : Application() {
         if (billingType == BillingType.GOOGLE)
             BillingManager.init(this, prodInAppIds, prodSubsIds, getStateBilling())
         else {
+            AdsComponentConfig.addAmazonItem(prodInAppIds)
             val appDatabase: AppDatabase = Room.databaseBuilder(
                 this,
                 AppDatabase::class.java, AppConstant.DB_NAME

@@ -5,8 +5,9 @@ import com.mmgsoft.modules.libs.AdsApplication
 
 const val DEFAULT_CURRENCY = "GOLD"
 const val DEFAULT_EXCHANGE_RATE = 1.2
-const val DEFAULT_ADS_ITEM_1 = "inapp.nonconsum.item1"
-const val DEFAULT_ADS_ITEM_2 = "inapp.nonconsum.item2"
+const val DEFAULT_EXCHANGE_RATE_OTHER = 1.6
+const val DEFAULT_ADS_ITEM_1 = "sub.pkg.interstitial"
+const val DEFAULT_ADS_ITEM_2 = "sub.pkg.banner"
 const val DEFAULT_ADS_CONSUME = "inapp.consum"
 const val DEFAULT_ASSETS_PATH = "backgrounds"
 const val ADS_PREFS_NAME = "ADS_PREFS_NAME"
@@ -19,6 +20,8 @@ const val START_WITH_PRODUCT_ID = "item_"
 const val START_WITH_DESCRIPTION = "background "
 const val PREFS_MONEY = "PREFS_MONEY"
 object AdsComponentConfig {
+    val amazonProdId = arrayListOf<String>()
+    internal val testDevices = mutableListOf<String>()
     internal const val weightingPrice = 100
     internal var currency = DEFAULT_CURRENCY
     internal var exchangeRate = DEFAULT_EXCHANGE_RATE
@@ -99,6 +102,17 @@ object AdsComponentConfig {
      */
     fun addBackgroundPrice(vararg price: String): AdsComponentConfig {
         backgroundPrices.addAll(price)
+        return this
+    }
+
+    fun addTestDevices(vararg devices: String): AdsComponentConfig {
+        testDevices.addAll(devices)
+        return this
+    }
+
+    internal fun addAmazonItem(amazonItem: List<String>): AdsComponentConfig {
+        this.amazonProdId.clear()
+        this.amazonProdId.addAll(amazonItem)
         return this
     }
 }

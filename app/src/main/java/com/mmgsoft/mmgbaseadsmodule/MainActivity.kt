@@ -1,6 +1,8 @@
 package com.mmgsoft.mmgbaseadsmodule
 
+import android.content.Intent
 import com.mmgsoft.modules.libs.activity.ChangeBackgroundActivity
+import com.mmgsoft.modules.libs.amzbiling.AmazonIapActivity
 import com.mmgsoft.modules.libs.base.BaseAutoBackgroundActivity
 import com.mmgsoft.modules.libs.manager.MoneyManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -17,7 +19,8 @@ class MainActivity : BaseAutoBackgroundActivity() {
 
     override fun initViews() {
         btnBuyItem1.setOnClickListener {
-            MoneyManager.addMoney("100$")
+//            MoneyManager.addMoney("100$")
+            startActivity(Intent(this, AmazonIapActivity::class.java))
         }
 
         btnChangeBackground.setOnClickListener {

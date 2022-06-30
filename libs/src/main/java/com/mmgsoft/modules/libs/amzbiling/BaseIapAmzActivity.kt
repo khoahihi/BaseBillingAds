@@ -1,213 +1,194 @@
-package com.mmgsoft.modules.libs.amzbiling;
+package com.mmgsoft.modules.libs.amzbiling
 
-import android.os.Bundle;
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import butterknife.ButterKnife
+import butterknife.Unbinder
+import com.amazon.device.iap.PurchasingListener
+import com.amazon.device.iap.PurchasingService
+import com.amazon.device.iap.model.*
+import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.billing.BillingManager
+import com.mmgsoft.modules.libs.data.local.db.AppDbHelper
+import com.mmgsoft.modules.libs.data.model.db.EntitlementModel
+import com.mmgsoft.modules.libs.data.model.db.SubscriptionModel
+import com.mmgsoft.modules.libs.manager.MoneyManager
+import com.mmgsoft.modules.libs.manager.MoneyManager.addMoney
+import com.mmgsoft.modules.libs.utils.AdsComponentConfig
+import com.mmgsoft.modules.libs.utils.DEFAULT_EXCHANGE_RATE_OTHER
+import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_1
+import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_2
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
+    private var allProductSkus: MutableSet<String> = HashSet()
+    var currentUserId: String? = null
+    var currentMarketPlace: String? = null
+    abstract val allSkus: Set<String>
+    abstract val resLayout: Int
+    abstract fun initData()
+    abstract fun notifyUpdateListView()
+    private var mUnbinder: Unbinder? = null
 
-import com.amazon.device.iap.PurchasingListener;
-import com.amazon.device.iap.PurchasingService;
-import com.amazon.device.iap.model.FulfillmentResult;
-import com.amazon.device.iap.model.Product;
-import com.amazon.device.iap.model.ProductDataResponse;
-import com.amazon.device.iap.model.ProductType;
-import com.amazon.device.iap.model.PurchaseResponse;
-import com.amazon.device.iap.model.PurchaseUpdatesResponse;
-import com.amazon.device.iap.model.Receipt;
-import com.amazon.device.iap.model.UserDataResponse;
-import com.mmgsoft.modules.libs.AdsApplication;
-import com.mmgsoft.modules.libs.data.local.db.AppDbHelper;
-import com.mmgsoft.modules.libs.data.model.db.EntitlementModel;
-import com.mmgsoft.modules.libs.data.model.db.SubscriptionModel;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
-public abstract class BaseIapAmzActivity extends AppCompatActivity implements PurchasingListener {
-    private Set<String> allProductSkus = new HashSet<>();
-    private String currentUserId;
-    private String currentMarketPlace;
-
-    public abstract Set<String> getAllSkus();
-
-    public abstract Integer getResLayout();
-
-    public abstract void initData();
-
-    public abstract void notifyUpdateListView();
-
-    private Unbinder mUnbinder;
-    protected List<ProductItem> productItems = new ArrayList<>();
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        allProductSkus.clear();
-        allProductSkus.addAll(getAllSkus());
-        setContentView(getResLayout());
-        mUnbinder = ButterKnife.bind(this);
-        PurchasingService.registerListener(this, this);
-        initData();
+    @JvmField
+    protected var productItems: MutableList<ProductItem> = ArrayList()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        allProductSkus.clear()
+        allProductSkus.addAll(allSkus)
+        setContentView(resLayout)
+        mUnbinder = ButterKnife.bind(this)
+        PurchasingService.registerListener(this, this)
+        initData()
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        PurchasingService.getProductData(allProductSkus);
+    override fun onStart() {
+        super.onStart()
+        PurchasingService.getProductData(allProductSkus)
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        PurchasingService.getUserData();
-        PurchasingService.getPurchaseUpdates(true);
+    override fun onResume() {
+        super.onResume()
+        PurchasingService.getUserData()
+        PurchasingService.getPurchaseUpdates(true)
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mUnbinder != null)
-            mUnbinder.unbind();
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mUnbinder != null) mUnbinder!!.unbind()
     }
 
-    public void onUserDataResponse(UserDataResponse userDataResponse) {
-        final UserDataResponse.RequestStatus status = userDataResponse.getRequestStatus();
-        switch (status) {
-            case SUCCESSFUL:
-                currentUserId = userDataResponse.getUserData().getUserId();
-                currentMarketPlace = userDataResponse.getUserData().getMarketplace();
-                break;
-            case FAILED:
-                break;
-            case NOT_SUPPORTED:
-                break;
-        }
-    }
-
-    public void onProductDataResponse(ProductDataResponse response) {
-        switch (response.getRequestStatus()) {
-            case SUCCESSFUL:
-
-                final Map<String, Product> products = response.getProductData();
-                Set<String> skuUnavailables = response.getUnavailableSkus();
-                productItems.clear();
-                for (final String key : products.keySet()) {
-                    Product product = products.get(key);
-                    ProductItem productItem = new ProductItem();
-                    productItem.title = product.getTitle();
-                    productItem.description = product.getDescription();
-                    productItem.sku = product.getSku();
-                    productItem.price = product.getPrice();
-                    productItem.iapViewType = product.getProductType() == ProductType.SUBSCRIPTION ? IapViewType.SUB : IapViewType.IN_APP;
-                    if (product.getProductType() == ProductType.CONSUMABLE)
-                        productItem.isBuy = false;
-                    else {
-                        productItem.isBuy = skuUnavailables.contains(product.getSku());
-                    }
-                    productItems.add(productItem);
+    override fun onUserDataResponse(userDataResponse: UserDataResponse) {
+        userDataResponse.requestStatus?.let {
+            when (it) {
+                UserDataResponse.RequestStatus.SUCCESSFUL -> {
+                    currentUserId = userDataResponse.userData.userId
+                    currentMarketPlace = userDataResponse.userData.marketplace
                 }
-                notifyUpdateListView();
-                break;
-
-            case FAILED:
-                notifyUpdateListView();
-                break;
+                UserDataResponse.RequestStatus.FAILED -> {}
+                UserDataResponse.RequestStatus.NOT_SUPPORTED -> {}
+            }
         }
     }
 
-    public void onPurchaseResponse(PurchaseResponse purchaseResponse) {
-        switch (purchaseResponse.getRequestStatus()) {
-            case SUCCESSFUL:
-                currentUserId = purchaseResponse.getUserData().getUserId();
-                currentMarketPlace = purchaseResponse.getUserData().getMarketplace();
-                PurchasingService.notifyFulfillment(purchaseResponse.getReceipt().getReceiptId(), FulfillmentResult.FULFILLED);
-                handleReceiptData(purchaseResponse.getReceipt());
-                break;
-            case FAILED:
-                break;
+    override fun onProductDataResponse(response: ProductDataResponse) {
+        when (response.requestStatus) {
+            ProductDataResponse.RequestStatus.SUCCESSFUL -> {
+                val products = response.productData
+                val skuUnavailables = response.unavailableSkus
+                productItems.clear()
+                for (key in products.keys) {
+                    val product = products[key]
+                    val productItem = ProductItem()
+                    productItem.title = product!!.title
+                    productItem.description = product.description
+                    productItem.sku = product.sku
+                    productItem.price = product.price
+                    productItem.iapViewType =
+                        if (product.productType == ProductType.SUBSCRIPTION) IapViewType.SUB else IapViewType.IN_APP
+                    if (product.productType == ProductType.CONSUMABLE) productItem.isBuy =
+                        false else {
+                        productItem.isBuy = skuUnavailables.contains(product.sku)
+                    }
+                    productItems.add(productItem)
+                }
+                notifyUpdateListView()
+            }
+            ProductDataResponse.RequestStatus.FAILED -> notifyUpdateListView()
         }
     }
 
-    public void onPurchaseUpdatesResponse(PurchaseUpdatesResponse purchaseUpdatesResponse) {
-        switch (purchaseUpdatesResponse.getRequestStatus()) {
-            case SUCCESSFUL:
-                currentUserId = purchaseUpdatesResponse.getUserData().getUserId();
-                currentMarketPlace = purchaseUpdatesResponse.getUserData().getMarketplace();
-                for (final Receipt receipt : purchaseUpdatesResponse.getReceipts()) {
+    override fun onPurchaseResponse(purchaseResponse: PurchaseResponse) {
+        when (purchaseResponse.requestStatus) {
+            PurchaseResponse.RequestStatus.SUCCESSFUL -> {
+                currentUserId = purchaseResponse.userData.userId
+                currentMarketPlace = purchaseResponse.userData.marketplace
+                PurchasingService.notifyFulfillment(
+                    purchaseResponse.receipt.receiptId,
+                    FulfillmentResult.FULFILLED
+                )
+                handleReceiptData(purchaseResponse.receipt)
+                val receipt = purchaseResponse.receipt
+                if (receipt.productType == ProductType.CONSUMABLE) {
+                    productItems.map { prodItem ->
+                        if (prodItem.sku == receipt.sku) {
+                            addMoney(prodItem.price)
+                            return@map
+                        }
+                    }
+                } else{
+                    productItems.map { prodItem ->
+                        if (prodItem.sku == receipt.sku) {
+                            if (prodItem.sku.contains(AdsComponentConfig.item1)) {
+                                BillingManager.putIsBilling(PREFS_BILLING_BUY_ITEM_1)
+                            } else if(prodItem.sku.contains(AdsComponentConfig.item2)) {
+                                BillingManager.putIsBilling(PREFS_BILLING_BUY_ITEM_2)
+                            } else addMoney(prodItem.price, DEFAULT_EXCHANGE_RATE_OTHER)
+                            return@map
+                        }
+                    }
+                }
+            }
+            PurchaseResponse.RequestStatus.FAILED -> {}
+        }
+    }
+
+    override fun onPurchaseUpdatesResponse(purchaseUpdatesResponse: PurchaseUpdatesResponse) {
+        when (purchaseUpdatesResponse.requestStatus) {
+            PurchaseUpdatesResponse.RequestStatus.SUCCESSFUL -> {
+                currentUserId = purchaseUpdatesResponse.userData.userId
+                currentMarketPlace = purchaseUpdatesResponse.userData.marketplace
+                for (receipt in purchaseUpdatesResponse.receipts) {
                     // Grant Item to User
-                    handleReceiptData(receipt);
-
+                    handleReceiptData(receipt)
                 }
                 if (purchaseUpdatesResponse.hasMore()) {
-                    PurchasingService.getPurchaseUpdates(true);
+                    PurchasingService.getPurchaseUpdates(true)
                 }
-                break;
-            case FAILED:
-                break;
+            }
+            PurchaseUpdatesResponse.RequestStatus.FAILED -> {}
         }
     }
 
-    private void handleReceiptData(Receipt receipt) {
-        switch (receipt.getProductType()) {
-            case CONSUMABLE:
-                break;
-            case SUBSCRIPTION:
-                SubscriptionModel subscriptionModel = new SubscriptionModel();
-                subscriptionModel.userId = currentUserId;
-                subscriptionModel.sku = receipt.getSku();
-                subscriptionModel.receiptId = receipt.getReceiptId();
-                subscriptionModel.fromDate = receipt.getPurchaseDate().getTime();
-                subscriptionModel.toDate = receipt.getCancelDate().getTime();
-                AdsApplication.instance.getDbHelper().insertSubscriptionRecord(subscriptionModel);
-                break;
-            case ENTITLED:
-                EntitlementModel entitlementModel = new EntitlementModel();
-                entitlementModel.userId = currentUserId;
-                entitlementModel.sku = receipt.getSku();
-                entitlementModel.receiptId = receipt.getReceiptId();
-                entitlementModel.purchaseDate = receipt.getPurchaseDate().getTime();
-                entitlementModel.cancelDate = receipt.getCancelDate() == null ? AppDbHelper.TO_DATE_NOT_SET : receipt.getCancelDate().getTime();
-                AdsApplication.instance.getDbHelper().insertEntitlementRecord(entitlementModel);
-                break;
+    private fun handleReceiptData(receipt: Receipt) {
+        receipt.productType?.let {
+            when (it) {
+                ProductType.CONSUMABLE -> {}
+                ProductType.SUBSCRIPTION -> {
+                    val subscriptionModel = SubscriptionModel()
+                    subscriptionModel.userId = currentUserId
+                    subscriptionModel.sku = receipt.sku
+                    subscriptionModel.receiptId = receipt.receiptId
+                    subscriptionModel.fromDate = receipt.purchaseDate.time
+                    subscriptionModel.toDate = receipt.cancelDate.time
+                    AdsApplication.instance.dbHelper!!.insertSubscriptionRecord(subscriptionModel)
+                }
+                ProductType.ENTITLED -> {
+                    val entitlementModel = EntitlementModel()
+                    entitlementModel.userId = currentUserId
+                    entitlementModel.sku = receipt.sku
+                    entitlementModel.receiptId = receipt.receiptId
+                    entitlementModel.purchaseDate = receipt.purchaseDate.time
+                    entitlementModel.cancelDate =
+                        if (receipt.cancelDate == null) AppDbHelper.TO_DATE_NOT_SET else receipt.cancelDate.time
+                    AdsApplication.instance.dbHelper!!.insertEntitlementRecord(entitlementModel)
+                }
+            }
         }
     }
 
-
-    public Set<String> getAllProductSkus() {
-        return allProductSkus;
+    fun getAllProductSkus(): Set<String> {
+        return allProductSkus
     }
 
-    public void setAllProductSkus(Set<String> allProductSkus) {
-        this.allProductSkus = allProductSkus;
+    fun setAllProductSkus(allProductSkus: MutableSet<String>) {
+        this.allProductSkus = allProductSkus
     }
 
-    public String getCurrentUserId() {
-        return currentUserId;
+    fun getProductItems(): List<ProductItem> {
+        return productItems
     }
 
-    public void setCurrentUserId(String currentUserId) {
-        this.currentUserId = currentUserId;
-    }
-
-    public String getCurrentMarketPlace() {
-        return currentMarketPlace;
-    }
-
-    public void setCurrentMarketPlace(String currentMarketPlace) {
-        this.currentMarketPlace = currentMarketPlace;
-    }
-
-    public List<ProductItem> getProductItems() {
-        return productItems;
-    }
-
-    public void setProductItems(List<ProductItem> productItems) {
-        this.productItems = productItems;
+    fun setProductItems(productItems: MutableList<ProductItem>) {
+        this.productItems = productItems
     }
 }

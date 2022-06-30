@@ -5,16 +5,14 @@ import com.mmgsoft.modules.libs.helpers.BillingType
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 
 class BaseModuleApplication : AdsApplication() {
-    override val testDevices: List<String>
-        get() = listOf()
-
     override val prodInAppIds: List<String>
-        get() = listOf()
+        get() = listOf("sub.pkg.interstitial", "sub.pkg.interstitial", "sub.pkg.interstitial", "sub.pkg.interstitial")
 
     override val prodSubsIds: List<String>
         get() = listOf()
+
     override val billingType: BillingType
-        get() = BillingType.GOOGLE
+        get() = BillingType.AMAZON
 
     override fun onCreated() {
         instance = this
@@ -25,6 +23,8 @@ class BaseModuleApplication : AdsApplication() {
             .updateCurrency("GOLD")
             .loadAssetsFromMyApp(this, "")
             .addBackgroundPrice("10", "100", "50", "20", "15", "60")
+            .updateItem1("lasd.asdals")
+            .updateItem2("asdalsk.asd")
     }
 
     companion object {

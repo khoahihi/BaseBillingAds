@@ -9,8 +9,8 @@ import com.amazon.device.iap.PurchasingService;
 import com.mmgsoft.modules.libs.R;
 import com.mmgsoft.modules.libs.R2;
 import com.mmgsoft.modules.libs.customview.SpacesItemDecoration;
+import com.mmgsoft.modules.libs.utils.AdsComponentConfig;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,16 +26,13 @@ public class AmazonIapActivity extends BaseIapAmzActivity implements OnItemClick
 
     private ProductSkuAdapter mSkuAdapter;
 
-
     @Override
     public Set<String> getAllSkus() {
-        Set<String> listSkus = new HashSet<>();
-        listSkus.addAll(Arrays.asList(AppConstant.ITEM_ENTITLE, AppConstant.ITEM_SUB_TERM_1));
-        return listSkus;
+        return new HashSet<>(AdsComponentConfig.INSTANCE.getAmazonProdId());
     }
 
     @Override
-    public Integer getResLayout() {
+    public int getResLayout() {
         return R.layout.purchase_product_layout;
     }
 
