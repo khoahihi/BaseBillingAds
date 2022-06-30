@@ -8,4 +8,5 @@
     <string name="change_background_failed">Change Background Failed</string>
     <string name="buy_success">Buy success</string>
     <string name="not_enough_money">Not enough money</string>
+    <string name="subscription_title">Purchase Product</string>
 </resources>

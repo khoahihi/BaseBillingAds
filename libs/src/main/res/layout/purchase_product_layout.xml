@@ -8,6 +8,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <RelativeLayout
             android:id="@+id/rlHeader"
             android:layout_width="match_parent"
@@ -20,7 +21,7 @@
                 android:layout_marginHorizontal="@dimen/_38sdp"
                 android:gravity="center"
                 android:padding="16dp"
-                android:text="@string/purchase_title"
+                android:text="@string/subscription_title"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12sdp" />
 
@@ -41,28 +42,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-        <com.mmgsoft.modules.libs.widgets.PurchaseView
-            android:layout_marginTop="@dimen/_10sdp"
-            android:id="@+id/purchaseView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcvSkuAvai"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:pv_layoutManager="list"
-            app:pv_orientation="vertical" />
+            android:layout_height="match_parent"/>
 
-        <FrameLayout
-            android:id="@+id/frBillingLoading"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#A6000000"
-            android:clickable="true"
-            android:focusable="true"
-            android:visibility="gone">
-            <com.github.ybq.android.spinkit.SpinKitView
-                style="@style/SpinKitView.Large.FadingCircle"
-                android:layout_width="@dimen/_38sdp"
-                android:layout_height="@dimen/_38sdp"
-                android:layout_gravity="center"
-                app:SpinKit_Color="#CF3B6E" />
-        </FrameLayout>
     </RelativeLayout>
 </LinearLayout>

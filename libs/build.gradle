@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+    id 'com.jakewharton.butterknife'
 }
 
 android {
@@ -57,4 +58,13 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'com.amazon.device:amazon-appstore-sdk:3.0.2'
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+
+    // UPDATE BUILD GRADLE
+    // parser
+    // database
+    implementation "androidx.room:room-rxjava2:2.0.0"
+    annotationProcessor "androidx.room:room-compiler:2.0.0"
 }
