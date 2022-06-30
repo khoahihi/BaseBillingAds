@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amazon.device.iap.PurchasingService;
 import com.mmgsoft.modules.libs.R;
+import com.mmgsoft.modules.libs.R2;
 import com.mmgsoft.modules.libs.customview.SpacesItemDecoration;
 
 import java.util.Arrays;
@@ -17,10 +18,10 @@ import butterknife.BindView;
 
 public class AmazonIapActivity extends BaseIapAmzActivity implements OnItemClickListener<ProductItem> {
 
-    @BindView(R.id.imBack)
+    @BindView(R2.id.imBack)
     public AppCompatImageView imBack;
 
-    @BindView(R.id.rcvSkuAvai)
+    @BindView(R2.id.rcvSkuAvai)
     public RecyclerView rcvSkuAvai;
 
     private ProductSkuAdapter mSkuAdapter;

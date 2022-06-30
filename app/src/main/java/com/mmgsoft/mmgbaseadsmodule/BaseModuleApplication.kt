@@ -1,6 +1,7 @@
 package com.mmgsoft.mmgbaseadsmodule
 
 import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.helpers.BillingType
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 
 class BaseModuleApplication : AdsApplication() {
@@ -12,6 +13,8 @@ class BaseModuleApplication : AdsApplication() {
 
     override val prodSubsIds: List<String>
         get() = listOf()
+    override val billingType: BillingType
+        get() = BillingType.GOOGLE
 
     override fun onCreated() {
         instance = this

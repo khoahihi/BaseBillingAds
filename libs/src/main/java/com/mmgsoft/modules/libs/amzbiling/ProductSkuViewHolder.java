@@ -5,23 +5,24 @@ import android.widget.TextView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.mmgsoft.modules.libs.R;
+import com.mmgsoft.modules.libs.R2;
 
 import butterknife.BindView;
 
 public class ProductSkuViewHolder extends BaseRecyclerViewHolder<ProductItem> {
-    @BindView(R.id.viewBlur)
+    @BindView(R2.id.viewBlur)
     View viewBlur;
 
-    @BindView(R.id.tvTitle)
+    @BindView(R2.id.tvTitle)
     TextView tvTitle;
 
-    @BindView(R.id.tvDescription)
+    @BindView(R2.id.tvDescription)
     TextView tvDescription;
 
-    @BindView(R.id.tvPrice)
+    @BindView(R2.id.tvPrice)
     TextView tvPrice;
 
-    @BindView(R.id.cardParent)
+    @BindView(R2.id.cardParent)
     MaterialCardView cardParent;
 
     public ProductSkuViewHolder(View itemView) {
