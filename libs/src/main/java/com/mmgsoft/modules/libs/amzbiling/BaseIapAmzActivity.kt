@@ -10,6 +10,7 @@ import com.amazon.device.iap.model.*
 import com.mmgsoft.modules.libs.AdsApplication
 import com.mmgsoft.modules.libs.billing.BillingManager
 import com.mmgsoft.modules.libs.data.local.db.AppDbHelper
+import com.mmgsoft.modules.libs.data.local.db.DbHelper
 import com.mmgsoft.modules.libs.data.model.db.EntitlementModel
 import com.mmgsoft.modules.libs.data.model.db.SubscriptionModel
 import com.mmgsoft.modules.libs.manager.MoneyManager.addMoney
@@ -49,7 +50,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (mUnbinder != null) mUnbinder!!.unbind()
+        mUnbinder?.unbind()
     }
 
     override fun onUserDataResponse(userDataResponse: UserDataResponse) {
@@ -72,19 +73,20 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                 val skuUnavailables = response.unavailableSkus
                 productItems.clear()
                 for (key in products.keys) {
-                    val product = products[key]
-                    val productItem = ProductItem()
-                    productItem.title = product!!.title
-                    productItem.description = product.description
-                    productItem.sku = product.sku
-                    productItem.price = product.price
-                    productItem.iapViewType =
-                        if (product.productType == ProductType.SUBSCRIPTION) IapViewType.SUB else IapViewType.IN_APP
-                    if (product.productType == ProductType.CONSUMABLE) productItem.isBuy =
-                        false else {
-                        productItem.isBuy = skuUnavailables.contains(product.sku)
+                    products[key]?.let { product ->
+                        val productItem = ProductItem()
+                        productItem.title = product.title ?: ""
+                        productItem.description = product.description ?: ""
+                        productItem.sku = product.sku ?: ""
+                        productItem.price = product.price ?: ""
+                        productItem.iapViewType =
+                            if (ProductType.SUBSCRIPTION == product.productType) IapViewType.SUB else IapViewType.IN_APP
+                        if (ProductType.CONSUMABLE == product.productType) productItem.isBuy =
+                            false else {
+                            productItem.isBuy = skuUnavailables.contains(product.sku)
+                        }
+                        productItems.add(productItem)
                     }
-                    productItems.add(productItem)
                 }
                 notifyUpdateListView()
             }
@@ -153,19 +155,18 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                     subscriptionModel.userId = currentUserId
                     subscriptionModel.sku = receipt.sku
                     subscriptionModel.receiptId = receipt.receiptId
-                    subscriptionModel.fromDate = receipt.purchaseDate.time
-                    subscriptionModel.toDate = receipt.cancelDate.time
-                    AdsApplication.instance.dbHelper!!.insertSubscriptionRecord(subscriptionModel)
+                    subscriptionModel.fromDate = receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
+                    subscriptionModel.toDate = receipt.cancelDate?.time ?: DbHelper.TO_DATE_NOT_SET
+                    AdsApplication.instance.dbHelper?.insertSubscriptionRecord(subscriptionModel)
                 }
                 ProductType.ENTITLED -> {
                     val entitlementModel = EntitlementModel()
                     entitlementModel.userId = currentUserId
                     entitlementModel.sku = receipt.sku
                     entitlementModel.receiptId = receipt.receiptId
-                    entitlementModel.purchaseDate = receipt.purchaseDate.time
-                    entitlementModel.cancelDate =
-                        if (receipt.cancelDate == null) AppDbHelper.TO_DATE_NOT_SET else receipt.cancelDate.time
-                    AdsApplication.instance.dbHelper!!.insertEntitlementRecord(entitlementModel)
+                    entitlementModel.purchaseDate = receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
+                    entitlementModel.cancelDate = receipt.cancelDate?.time ?: DbHelper.TO_DATE_NOT_SET
+                    AdsApplication.instance.dbHelper?.insertEntitlementRecord(entitlementModel)
                 }
             }
         }
