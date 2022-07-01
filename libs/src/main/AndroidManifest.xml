@@ -1,18 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mmgsoft.modules.libs">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <queries>
+        <package android:name="com.amazon.venezia" />
+    </queries>
+    
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
     <application>
-        <activity android:name=".activity.PurchaseActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+        <activity
+            android:name=".activity.PurchaseActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
-        <activity android:name=".activity.ChangeBackgroundActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+        <activity
+            android:name=".activity.ChangeBackgroundActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
-        <activity android:name=".amzbiling.AmazonIapActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+        <activity
+            android:name=".amzbiling.AmazonIapActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <receiver
+            android:name="com.amazon.device.iap.ResponseReceiver"
+            android:exported="true"
+            android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY">
+            <intent-filter>
+                <action android:name="com.amazon.inapp.purchasing.NOTIFY" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="com.amazon.device.iap.PurchasingService"
+            android:exported="true" />
     </application>
 </manifest>

@@ -12,7 +12,6 @@ import com.mmgsoft.modules.libs.billing.BillingManager
 import com.mmgsoft.modules.libs.data.local.db.AppDbHelper
 import com.mmgsoft.modules.libs.data.model.db.EntitlementModel
 import com.mmgsoft.modules.libs.data.model.db.SubscriptionModel
-import com.mmgsoft.modules.libs.manager.MoneyManager
 import com.mmgsoft.modules.libs.manager.MoneyManager.addMoney
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.DEFAULT_EXCHANGE_RATE_OTHER
@@ -41,15 +40,11 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
         initData()
     }
 
-    override fun onStart() {
-        super.onStart()
-        PurchasingService.getProductData(allProductSkus)
-    }
-
     override fun onResume() {
         super.onResume()
         PurchasingService.getUserData()
         PurchasingService.getPurchaseUpdates(true)
+        PurchasingService.getProductData(allProductSkus.toSet())
     }
 
     override fun onDestroy() {
