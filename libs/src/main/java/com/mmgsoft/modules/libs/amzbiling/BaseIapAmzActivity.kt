@@ -183,7 +183,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                     subscriptionModel.receiptId = receipt.receiptId
                     subscriptionModel.fromDate = receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
                     subscriptionModel.toDate = receipt.cancelDate?.time ?: DbHelper.TO_DATE_NOT_SET
-                    productItems.find { it.sku == receipt.termSku }?.let { prodItem ->
+                    productItems.find { receipt.termSku.contains(it.sku) }?.let { prodItem ->
                         prodItem.isBuy = true
                     }
                     doOnBackground {
@@ -197,7 +197,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                     entitlementModel.receiptId = receipt.receiptId
                     entitlementModel.purchaseDate = receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
                     entitlementModel.cancelDate = receipt.cancelDate?.time ?: DbHelper.TO_DATE_NOT_SET
-                    productItems.find { it.sku == receipt.sku }?.let { prodItem ->
+                    productItems.find { receipt.sku.contains(it.sku) }?.let { prodItem ->
                         prodItem.isBuy = true
                     }
                     doOnBackground {
