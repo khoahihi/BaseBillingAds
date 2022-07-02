@@ -8,11 +8,14 @@ import com.amazon.device.iap.PurchasingListener
 import com.amazon.device.iap.PurchasingService
 import com.amazon.device.iap.model.*
 import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.billing.BillingManager
-import com.mmgsoft.modules.libs.data.local.db.AppDbHelper
 import com.mmgsoft.modules.libs.data.local.db.DbHelper
 import com.mmgsoft.modules.libs.data.model.db.EntitlementModel
 import com.mmgsoft.modules.libs.data.model.db.SubscriptionModel
+import com.mmgsoft.modules.libs.etx.setStatusBarColor
+import com.mmgsoft.modules.libs.etx.setStatusBarTextColorDark
+import com.mmgsoft.modules.libs.helpers.AmazonScreenType
 import com.mmgsoft.modules.libs.manager.MoneyManager.addMoney
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.DEFAULT_EXCHANGE_RATE_OTHER
@@ -31,11 +34,13 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
     abstract fun initData()
     abstract fun notifyUpdateListView()
     private var mUnbinder: Unbinder? = null
+    protected abstract val screenType: AmazonScreenType
+    protected val productItems = arrayListOf<ProductItem>()
 
-    @JvmField
-    protected var productItems: MutableList<ProductItem> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStatusBarColor(R.color.white)
+        setStatusBarTextColorDark()
         allProductSkus.clear()
         allProductSkus.addAll(allSkus)
         setContentView(resLayout)
@@ -88,7 +93,15 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                             false else {
                             productItem.isBuy = skuUnavailables.contains(product.sku)
                         }
-                        productItems.add(productItem)
+                        if(screenType == AmazonScreenType.BUY_GOLD) {
+                            if(product.productType == ProductType.CONSUMABLE) {
+                                productItems.add(productItem)
+                            }
+                        } else {
+                            if(product.productType == ProductType.ENTITLED || product.productType == ProductType.SUBSCRIPTION) {
+                                productItems.add(productItem)
+                            }
+                        }
                     }
                 }
                 notifyUpdateListView()
@@ -97,6 +110,9 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
         }
     }
 
+    /**
+     * Khi purchase thành công
+     */
     override fun onPurchaseResponse(purchaseResponse: PurchaseResponse) {
         when (purchaseResponse.requestStatus) {
             PurchaseResponse.RequestStatus.SUCCESSFUL -> {
@@ -136,6 +152,9 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
         }
     }
 
+    /**
+     * Trả về những item đã mua
+     */
     override fun onPurchaseUpdatesResponse(purchaseUpdatesResponse: PurchaseUpdatesResponse) {
         when (purchaseUpdatesResponse.requestStatus) {
             PurchaseUpdatesResponse.RequestStatus.SUCCESSFUL -> {
@@ -164,6 +183,9 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                     subscriptionModel.receiptId = receipt.receiptId
                     subscriptionModel.fromDate = receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
                     subscriptionModel.toDate = receipt.cancelDate?.time ?: DbHelper.TO_DATE_NOT_SET
+                    productItems.find { it.sku == receipt.termSku }?.let { prodItem ->
+                        prodItem.isBuy = true
+                    }
                     doOnBackground {
                         AdsApplication.instance.dbHelper?.insertSubscriptionRecord(subscriptionModel)
                     }
@@ -175,11 +197,16 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                     entitlementModel.receiptId = receipt.receiptId
                     entitlementModel.purchaseDate = receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
                     entitlementModel.cancelDate = receipt.cancelDate?.time ?: DbHelper.TO_DATE_NOT_SET
+                    productItems.find { it.sku == receipt.sku }?.let { prodItem ->
+                        prodItem.isBuy = true
+                    }
                     doOnBackground {
                         AdsApplication.instance.dbHelper?.insertEntitlementRecord(entitlementModel)
                     }
                 }
             }
+
+            notifyUpdateListView()
         }
     }
 
@@ -200,6 +227,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
     }
 
     fun setProductItems(productItems: MutableList<ProductItem>) {
-        this.productItems = productItems
+        this.productItems.clear()
+        this.productItems.addAll(productItems)
     }
 }

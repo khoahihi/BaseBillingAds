@@ -1,17 +1,22 @@
 package com.mmgsoft.modules.libs.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.adapters.BackgroundAdapter
+import com.mmgsoft.modules.libs.amzbiling.AmazonIapActivity
 import com.mmgsoft.modules.libs.base.BaseActivity
 import com.mmgsoft.modules.libs.dialog.BuyBackgroundBottomSheet
 import com.mmgsoft.modules.libs.etx.setStatusBarColor
 import com.mmgsoft.modules.libs.etx.setStatusBarTextColorDark
+import com.mmgsoft.modules.libs.helpers.AmazonScreenType
 import com.mmgsoft.modules.libs.manager.AssetManager
 import com.mmgsoft.modules.libs.manager.BackgroundManager
 import com.mmgsoft.modules.libs.manager.BackgroundManager.addWasPaidBackground
@@ -31,6 +36,10 @@ class ChangeBackgroundActivity : BaseActivity() {
         fun open(ctx: Context) {
             ctx.startActivity(Intent(ctx, ChangeBackgroundActivity::class.java))
         }
+    }
+
+    private val lnBound: LinearLayout by lazy {
+        findViewById(R.id.lnBound)
     }
 
     private val backgroundPrices: List<String> by lazy {
@@ -61,6 +70,10 @@ class ChangeBackgroundActivity : BaseActivity() {
         findViewById(R.id.tvGold)
     }
 
+    private val tvBuyGold: TextView by lazy {
+        findViewById(R.id.tvBuyGold)
+    }
+
     private val imBack: ImageView by lazy {
         findViewById(R.id.imBack)
     }
@@ -86,7 +99,11 @@ class ChangeBackgroundActivity : BaseActivity() {
         backgroundMotion.setTransitionListener(object : MotionLayout.TransitionListener {
             override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) {}
 
-            override fun onTransitionChange(motionLayout: MotionLayout?, startId: Int, endId: Int, progress: Float) {}
+            override fun onTransitionChange(motionLayout: MotionLayout?, startId: Int, endId: Int, progress: Float) {
+                if(progress in 45f..55f) {
+                    updateCurrentMoney()
+                }
+            }
 
             override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
             }
@@ -98,6 +115,15 @@ class ChangeBackgroundActivity : BaseActivity() {
             finish()
         }
 
+        lnBound.setOnClickListener {
+            AmazonIapActivity.open(this, AmazonScreenType.BUY_GOLD)
+        }
+
+        updateCurrentMoney()
+    }
+
+    override fun onResume() {
+        super.onResume()
         updateCurrentMoney()
     }
 
@@ -143,9 +169,17 @@ class ChangeBackgroundActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateCurrentMoney() {
+        val isShowBuy = backgroundMotion.currentState == R.id.end
+
         tvGold.text = MoneyManager.getCurrentGold().toString()
         tvCurrency.text = AdsComponentConfig.currency
+        tvBuyGold.text = "Buy ${AdsComponentConfig.currency}"
+
+        tvGold.visibility = if(isShowBuy) View.GONE else View.VISIBLE
+        tvCurrency.visibility = if(isShowBuy) View.GONE else View.VISIBLE
+        tvBuyGold.visibility = if(isShowBuy) View.VISIBLE else View.GONE
     }
 
     private fun getBackgrounds() = AssetManager.loadListFilesOfAsset(
