@@ -100,12 +100,10 @@ class ChangeBackgroundActivity : BaseActivity() {
             override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) {}
 
             override fun onTransitionChange(motionLayout: MotionLayout?, startId: Int, endId: Int, progress: Float) {
-                if(progress in 45f..55f) {
-                    updateCurrentMoney()
-                }
             }
 
             override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
+                updateCurrentMoney()
             }
 
             override fun onTransitionTrigger(motionLayout: MotionLayout?, triggerId: Int, positive: Boolean, progress: Float) {}
@@ -179,7 +177,6 @@ class ChangeBackgroundActivity : BaseActivity() {
 
         tvGold.visibility = if(isShowBuy) View.GONE else View.VISIBLE
         tvCurrency.visibility = if(isShowBuy) View.GONE else View.VISIBLE
-        tvBuyGold.visibility = if(isShowBuy) View.VISIBLE else View.GONE
     }
 
     private fun getBackgrounds() = AssetManager.loadListFilesOfAsset(

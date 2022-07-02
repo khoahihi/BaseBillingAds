@@ -22,10 +22,8 @@ class BaseModuleApplication : AdsApplication() {
     override fun addConfig() {
         AdsComponentConfig
             .updateCurrency("GOLD")
-            .loadAssetsFromMyApp(this, "")
-            .addBackgroundPrice("10", "100", "50", "20", "15", "60")
-            .updateItem1("lasd.asdals")
-            .updateItem2("asdalsk.asd")
+            .updateItem1("")
+            .updateItem2("")
     }
 
     companion object {

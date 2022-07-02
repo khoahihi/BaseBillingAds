@@ -21,10 +21,26 @@ abstract class AdsApplication : Application() {
         AdsManager().initAdsManager(this, testDevices.toMutableList())
     }
 
+    /**
+     * Billing Type:
+     *     - AMAZON: trả về toàn bộ ID vào prodInAppIds
+     *     - GOOGLE: trả về danh sách inapp
+     */
     abstract val prodInAppIds: List<String>
+
+    /**
+     * Trả về danh sách subs
+     */
     abstract val prodSubsIds: List<String>
+
+    /**
+     * Trả về billing type để init trong application
+     */
     abstract val billingType: BillingType
 
+    /**
+     * function được gọi trước khi init billing
+     */
     protected abstract fun onCreated()
     protected open fun getStateBilling() = StateAfterBuy.DISABLE
 
@@ -34,7 +50,7 @@ abstract class AdsApplication : Application() {
      */
     protected open fun addConfig() {}
 
-    inline fun <reified T: AdsApplication> bind(clz: T) {
+    protected inline fun <reified T: AdsApplication> bind(clz: T) {
         AnnotationConverter.get(T::class.java)
     }
 
