@@ -18,6 +18,9 @@ import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.DEFAULT_EXCHANGE_RATE_OTHER
 import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_1
 import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_2
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
     private var allProductSkus: MutableSet<String> = HashSet()
@@ -157,7 +160,9 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                     subscriptionModel.receiptId = receipt.receiptId
                     subscriptionModel.fromDate = receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
                     subscriptionModel.toDate = receipt.cancelDate?.time ?: DbHelper.TO_DATE_NOT_SET
-                    AdsApplication.instance.dbHelper?.insertSubscriptionRecord(subscriptionModel)
+                    doOnBackground {
+                        AdsApplication.instance.dbHelper?.insertSubscriptionRecord(subscriptionModel)
+                    }
                 }
                 ProductType.ENTITLED -> {
                     val entitlementModel = EntitlementModel()
@@ -166,10 +171,16 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                     entitlementModel.receiptId = receipt.receiptId
                     entitlementModel.purchaseDate = receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
                     entitlementModel.cancelDate = receipt.cancelDate?.time ?: DbHelper.TO_DATE_NOT_SET
-                    AdsApplication.instance.dbHelper?.insertEntitlementRecord(entitlementModel)
+                    doOnBackground {
+                        AdsApplication.instance.dbHelper?.insertEntitlementRecord(entitlementModel)
+                    }
                 }
             }
         }
+    }
+
+    private fun doOnBackground(doWork: () -> Unit) = CoroutineScope(Dispatchers.IO).launch {
+        doWork.invoke()
     }
 
     fun getAllProductSkus(): Set<String> {
