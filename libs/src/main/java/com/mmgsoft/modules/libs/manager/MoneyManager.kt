@@ -1,6 +1,9 @@
 package com.mmgsoft.modules.libs.manager
 
 import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.etx.toCurrency
+import com.mmgsoft.modules.libs.helpers.AmazonCurrency
+import com.mmgsoft.modules.libs.helpers.BillingType
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.PREFS_MONEY
@@ -12,16 +15,44 @@ object MoneyManager {
         AdsApplication.prefs
     }
 
+    private val amazonCurrencies = listOf(
+        AmazonCurrency.US.toCurrency(),
+        AmazonCurrency.CA.toCurrency(),
+        AmazonCurrency.BR.toCurrency(),
+        AmazonCurrency.MX.toCurrency(),
+        AmazonCurrency.GB.toCurrency(),
+        AmazonCurrency.DE.toCurrency(),
+        AmazonCurrency.ES.toCurrency(),
+        AmazonCurrency.FR.toCurrency(),
+        AmazonCurrency.IT.toCurrency(),
+        AmazonCurrency.IN.toCurrency(),
+        AmazonCurrency.JP.toCurrency(),
+        AmazonCurrency.AU.toCurrency(),
+    )
+
     /**
      * Chuyển từ tiền DOLLAR sang loại tiền của app
      */
     private fun exchange(money: String, rate: Double = AdsComponentConfig.exchangeRate): Double {
+        val m = if(AdsComponentConfig.billingType == BillingType.GOOGLE) money else getMoneyWithAmazonCurrency(money)
         val numberFormat = NumberFormat.getInstance()
         numberFormat.maximumFractionDigits = 0
         numberFormat.currency = Currency.getInstance(Locale.US)
-        return numberFormat.parse(money)?.let {
+        return numberFormat.parse(m)?.let {
             it.toDouble() * rate
         } ?: 0.0
+    }
+
+    private fun getMoneyWithAmazonCurrency(money: String): String {
+        var m = ""
+        amazonCurrencies.map { currency ->
+            if(money.contains(currency.symbol)) {
+                m = money.substring(currency.symbol.length, money.length)
+                return@map
+            }
+        }
+
+        return m
     }
 
     /**

@@ -4,8 +4,13 @@ import android.content.Intent
 import com.mmgsoft.modules.libs.activity.ChangeBackgroundActivity
 import com.mmgsoft.modules.libs.amzbiling.AmazonIapActivity
 import com.mmgsoft.modules.libs.base.BaseAutoBackgroundActivity
+import com.mmgsoft.modules.libs.helpers.UseCurrency
 import com.mmgsoft.modules.libs.manager.MoneyManager
 import kotlinx.android.synthetic.main.activity_main.*
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.*
 
 class MainActivity : BaseAutoBackgroundActivity() {
     override val backgroundImageView: Int

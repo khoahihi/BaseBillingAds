@@ -2,6 +2,8 @@ package com.mmgsoft.modules.libs.utils
 
 import android.content.Context
 import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.helpers.AmazonCurrency
+import com.mmgsoft.modules.libs.helpers.BillingType
 
 const val DEFAULT_CURRENCY = "GOLD"
 const val DEFAULT_EXCHANGE_RATE = 1.2
@@ -30,6 +32,7 @@ object AdsComponentConfig {
     internal var consumeKey = DEFAULT_ADS_CONSUME
     internal var otherAppContext: Context = AdsApplication.instance
     internal var assetsPath = DEFAULT_ASSETS_PATH
+    internal var billingType = BillingType.AMAZON
     internal val backgroundPrices = mutableListOf<String>()
 
     /**
@@ -107,6 +110,11 @@ object AdsComponentConfig {
 
     fun addTestDevices(vararg devices: String): AdsComponentConfig {
         testDevices.addAll(devices)
+        return this
+    }
+
+    fun updateBillingType(billingType: BillingType): AdsComponentConfig {
+        this.billingType = billingType
         return this
     }
 

@@ -2,6 +2,7 @@ package com.mmgsoft.mmgbaseadsmodule
 
 import com.mmgsoft.modules.libs.AdsApplication
 import com.mmgsoft.modules.libs.helpers.BillingType
+import com.mmgsoft.modules.libs.helpers.UseCurrency
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 
 class BaseModuleApplication : AdsApplication() {
