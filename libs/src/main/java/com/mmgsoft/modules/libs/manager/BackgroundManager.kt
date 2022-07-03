@@ -2,7 +2,6 @@ package com.mmgsoft.modules.libs.manager
 
 import android.app.Activity
 import android.app.Application
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.helpers.BackgroundLoadOn
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.PREFS_CURRENT_BACKGROUND_SELECTED
@@ -21,14 +21,17 @@ object BackgroundManager {
         val customPackageName = AdsComponentConfig.packageNameLoadBackground
         val pkgCompare = customPackageName.ifBlank { application.packageName }
         val activitiesNonLoad = AdsComponentConfig.activitiesNonLoadBackground
+        val loadBackgroundOn = AdsComponentConfig.loadBackgroundOn
         application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
-            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                if(loadBackgroundOn == BackgroundLoadOn.ON_CREATED) {
+                    onLoadBackground(activitiesNonLoad, pkgCompare, activity)
+                }
+            }
             override fun onActivityStarted(activity: Activity) {}
             override fun onActivityResumed(activity: Activity) {
-                if(activitiesNonLoad.find { it.contains(activity.localClassName) } == null) {
-                    if(activity.packageName.contains(pkgCompare)) {
-                        loadBackground(activity)
-                    }
+                if(loadBackgroundOn == BackgroundLoadOn.ON_RESUME) {
+                    onLoadBackground(activitiesNonLoad, pkgCompare, activity)
                 }
             }
 
@@ -44,6 +47,14 @@ object BackgroundManager {
             override fun onActivityDestroyed(activity: Activity) {
             }
         })
+    }
+
+    private fun onLoadBackground(activitiesNonLoad: List<String>, pkgCompare: String, act: Activity) {
+        if(activitiesNonLoad.find { it.contains(act.localClassName) } == null) {
+            if(act.packageName.contains(pkgCompare)) {
+                loadBackground(act)
+            }
+        }
     }
 
     private val adsPref by lazy {

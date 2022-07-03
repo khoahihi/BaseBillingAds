@@ -4,6 +4,7 @@ import android.content.Context
 import com.mmgsoft.modules.libs.AdsApplication
 import com.mmgsoft.modules.libs.etx.toCurrency
 import com.mmgsoft.modules.libs.helpers.AmazonCurrency
+import com.mmgsoft.modules.libs.helpers.BackgroundLoadOn
 import com.mmgsoft.modules.libs.helpers.BillingType
 import com.mmgsoft.modules.libs.manager.MoneyManager
 import com.mmgsoft.modules.libs.models.BillingMapper
@@ -41,6 +42,7 @@ object AdsComponentConfig {
     internal var otherAppContext: Context = AdsApplication.instance
     internal var assetsPath = DEFAULT_ASSETS_PATH
     internal var billingType = BillingType.AMAZON
+    internal var loadBackgroundOn = BackgroundLoadOn.ON_RESUME
     internal val backgroundPrices = mutableListOf<String>()
     internal val billingMappers = mutableListOf(
         BillingMapper(BILLING_MAPPER_KEY_1, "US$5000"),
@@ -167,8 +169,20 @@ object AdsComponentConfig {
         return this
     }
 
+    /**
+     * @param activitiesName: Danh sách tên activity cấu hình để loại bỏ background
+     */
     fun addActivitiesNonLoadBackground(vararg activitiesName: String): AdsComponentConfig {
         this.activitiesNonLoadBackground.addAll(activitiesName)
+        return this
+    }
+
+    /**
+     * @param backgroundLoadOn: Cấu hình background được load ở function nào [ON_CREATED, ON_RESUME]
+     * Default: ON_RESUME
+     */
+    fun updateLoadBackgroundOn(backgroundLoadOn: BackgroundLoadOn): AdsComponentConfig {
+        this.loadBackgroundOn = backgroundLoadOn
         return this
     }
 
