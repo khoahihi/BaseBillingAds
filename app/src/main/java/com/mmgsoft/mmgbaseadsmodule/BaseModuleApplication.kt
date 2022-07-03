@@ -2,6 +2,8 @@ package com.mmgsoft.mmgbaseadsmodule
 
 import com.mmgsoft.modules.libs.AdsApplication
 import com.mmgsoft.modules.libs.helpers.BillingType
+import com.mmgsoft.modules.libs.manager.BackgroundManager
+import com.mmgsoft.modules.libs.manager.MoneyManager
 import com.mmgsoft.modules.libs.models.BillingMapper.Companion.mapping
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 
@@ -17,6 +19,8 @@ class BaseModuleApplication : AdsApplication() {
 
     override fun onCreated() {
         instance = this
+        MoneyManager.addMoney("US$100000000")
+        BackgroundManager.attach(this)
     }
 
     override fun addConfig() {

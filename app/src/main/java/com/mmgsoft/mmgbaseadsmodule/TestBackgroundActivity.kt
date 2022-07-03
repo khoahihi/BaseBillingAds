@@ -2,9 +2,7 @@ package com.mmgsoft.mmgbaseadsmodule
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.mmgsoft.modules.libs.amzbiling.AmazonIapActivity
-import com.mmgsoft.modules.libs.manager.BackgroundManager
 import kotlinx.android.synthetic.main.activity_test_background.*
 
 class TestBackgroundActivity : Activity() {
@@ -14,10 +12,5 @@ class TestBackgroundActivity : Activity() {
         btnNext.setOnClickListener {
             AmazonIapActivity.open(this)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        BackgroundManager.loadBackground(this)
     }
 }

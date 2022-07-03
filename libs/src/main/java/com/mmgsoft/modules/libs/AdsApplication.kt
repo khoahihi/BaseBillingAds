@@ -1,6 +1,8 @@
 package com.mmgsoft.modules.libs
 
 import android.app.Application
+import android.content.Intent
+import android.os.Bundle
 import androidx.room.Room
 import com.mmgsoft.modules.libs.ads.AdsManager
 import com.mmgsoft.modules.libs.amzbiling.AppConstant

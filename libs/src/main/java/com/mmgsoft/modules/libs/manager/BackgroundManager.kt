@@ -1,6 +1,9 @@
 package com.mmgsoft.modules.libs.manager
 
 import android.app.Activity
+import android.app.Application
+import android.content.pm.PackageManager
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -12,6 +15,30 @@ import com.mmgsoft.modules.libs.utils.PREFS_CURRENT_BACKGROUND_SELECTED
 
 object BackgroundManager {
     private const val EXTRA_BACKGROUND_IMAGE = "EXTRA_BACKGROUND_IMAGE"
+
+    fun attach(application: Application) {
+        application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+            override fun onActivityStarted(activity: Activity) {}
+            override fun onActivityResumed(activity: Activity) {
+                if(activity.packageName != application.packageName) {
+                    loadBackground(activity)
+                }
+            }
+
+            override fun onActivityPaused(activity: Activity) {
+            }
+
+            override fun onActivityStopped(activity: Activity) {
+            }
+
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+            }
+
+            override fun onActivityDestroyed(activity: Activity) {
+            }
+        })
+    }
 
     private val adsPref by lazy {
         AdsApplication.prefs
