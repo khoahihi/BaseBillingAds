@@ -30,6 +30,7 @@ const val BILLING_MAPPER_KEY_3 = ""
 object AdsComponentConfig {
     val amazonProdId = arrayListOf<String>()
     internal var packageNameLoadBackground = ""
+    internal val activitiesNonLoadBackground = mutableListOf<String>()
     internal val testDevices = mutableListOf<String>()
     internal const val weightingPrice = 100
     internal var currency = DEFAULT_CURRENCY
@@ -163,6 +164,11 @@ object AdsComponentConfig {
      */
     fun updatePackageNameLoadBackground(packageName: String): AdsComponentConfig{
         this.packageNameLoadBackground = packageName
+        return this
+    }
+
+    fun addActivitiesNonLoadBackground(vararg activitiesName: String): AdsComponentConfig {
+        this.activitiesNonLoadBackground.addAll(activitiesName)
         return this
     }
 

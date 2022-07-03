@@ -31,7 +31,7 @@ class BaseModuleApplication : AdsApplication() {
             .updateBillingMapper(
                 "abcd" mapping "5000",
                 "bcde" mapping "10000",
-            )
+            ).addActivitiesNonLoadBackground(MainActivity::class.java.name)
     }
 
     companion object {

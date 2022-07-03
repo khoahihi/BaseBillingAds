@@ -20,12 +20,15 @@ object BackgroundManager {
     fun attach(application: Application) {
         val customPackageName = AdsComponentConfig.packageNameLoadBackground
         val pkgCompare = customPackageName.ifBlank { application.packageName }
+        val activitiesNonLoad = AdsComponentConfig.activitiesNonLoadBackground
         application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
             override fun onActivityStarted(activity: Activity) {}
             override fun onActivityResumed(activity: Activity) {
-                if(activity.packageName.contains(pkgCompare)) {
-                    loadBackground(activity)
+                if(activitiesNonLoad.find { it.contains(activity.localClassName) } == null) {
+                    if(activity.packageName.contains(pkgCompare)) {
+                        loadBackground(activity)
+                    }
                 }
             }
 
