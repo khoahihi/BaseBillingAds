@@ -29,6 +29,7 @@ const val BILLING_MAPPER_KEY_2 = ""
 const val BILLING_MAPPER_KEY_3 = ""
 object AdsComponentConfig {
     val amazonProdId = arrayListOf<String>()
+    internal var packageNameLoadBackground = ""
     internal val testDevices = mutableListOf<String>()
     internal const val weightingPrice = 100
     internal var currency = DEFAULT_CURRENCY
@@ -154,6 +155,14 @@ object AdsComponentConfig {
      */
     fun updateBillingMapper(vararg mappers: BillingMapper): AdsComponentConfig {
         updateBillingMapper(mappers.toMutableList())
+        return this
+    }
+
+    /**
+     * @param packageName: PackageName so sánh để load background
+     */
+    fun updatePackageNameLoadBackground(packageName: String): AdsComponentConfig{
+        this.packageNameLoadBackground = packageName
         return this
     }
 
