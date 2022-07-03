@@ -35,7 +35,7 @@ class AmazonIapActivity : BaseIapAmzActivity(), OnItemClickListener<ProductItem>
     companion object {
         const val EXTRA_SCREEN_TYPE = "EXTRA_SCREEN_TYPE"
 
-        fun open(ctx: Context, screenType: AmazonScreenType) =
+        fun open(ctx: Context, screenType: AmazonScreenType = AmazonScreenType.SUBSCRIPTION) =
             Intent(ctx, AmazonIapActivity::class.java).apply {
                 putExtra(EXTRA_SCREEN_TYPE, screenType.type)
                 ctx.startActivity(this)

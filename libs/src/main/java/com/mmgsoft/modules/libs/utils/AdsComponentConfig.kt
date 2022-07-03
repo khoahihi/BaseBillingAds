@@ -83,6 +83,9 @@ object AdsComponentConfig {
         return this
     }
 
+    /**
+     * @param newConsume Path consumeID để phân biệt với INAPP của Google Billing
+     */
     fun updateConsumeKey(newConsume: String): AdsComponentConfig {
         this.consumeKey = newConsume
         return this
@@ -119,33 +122,57 @@ object AdsComponentConfig {
         return this
     }
 
+    /**
+     * @param devices danh sách deviceID thêm vào Admob, tránh trường hợp bị leak và ăn gậy từ Google
+     */
     fun addTestDevices(vararg devices: String): AdsComponentConfig {
         testDevices.addAll(devices)
         return this
     }
 
+    /**
+     * Cập nhật loại Billing
+     * @param billingType: [GOOGLE, AMAZON]
+     */
     fun updateBillingType(billingType: BillingType): AdsComponentConfig {
         this.billingType = billingType
         return this
     }
 
+    /**
+     * Fix số tiền cộng vào sau khi thanh toán các gói
+     */
     fun updateBillingMapper(mappers: List<BillingMapper>): AdsComponentConfig {
         this.billingMappers.clear()
         this.billingMappers.addAll(mappers.map(::standardizedData))
         return this
     }
 
+    /**
+     * Fix số tiền cộng vào sau khi thanh toán các gói
+     * @param mappers
+     */
     fun updateBillingMapper(vararg mappers: BillingMapper): AdsComponentConfig {
         updateBillingMapper(mappers.toMutableList())
         return this
     }
 
+    /**
+     * Cập nhật danh sách ProductID để lấy các gói từ AmazonBilling
+     * @param amazonItem
+     */
     internal fun addAmazonItem(amazonItem: List<String>): AdsComponentConfig {
         this.amazonProdId.clear()
         this.amazonProdId.addAll(amazonItem)
         return this
     }
 
+    /**
+     * @version: 0.1.5
+     * @param billingMapper Là dữ liệu chưa được chuẩn hóa
+     * @return Dữ liệu đã được chuẩn hóa số tiền nhận sau
+     *          khi được chỉnh sửa từ danh sách {@link AdsComponentConfig#updateBillingMapper}
+     */
     private fun standardizedData(billingMapper: BillingMapper): BillingMapper {
         var isNotStandardized = true
         var price = billingMapper.price

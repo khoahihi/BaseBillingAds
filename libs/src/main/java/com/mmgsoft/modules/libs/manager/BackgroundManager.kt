@@ -1,11 +1,12 @@
 package com.mmgsoft.modules.libs.manager
 
+import android.view.View
+import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.mmgsoft.modules.libs.AdsApplication
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.PREFS_CURRENT_BACKGROUND_SELECTED
-import kotlin.random.Random
 
 object BackgroundManager {
     private val adsPref by lazy {
@@ -102,5 +103,21 @@ object BackgroundManager {
         }
 
         return randoms[randoms.indices.random()]
+    }
+
+    fun loadBackgroundToImageId(view: View, imageId: Int) {
+        getBackground { background ->
+            AssetManager.loadBitmap(background.backgroundPath) {
+                view.findViewById<ImageView>(imageId).setImageBitmap(it)
+            }
+        }
+    }
+
+    fun loadBackgroundToImageView(imageView: ImageView) {
+        getBackground { background ->
+            AssetManager.loadBitmap(background.backgroundPath) {
+                imageView.setImageBitmap(it)
+            }
+        }
     }
 }
