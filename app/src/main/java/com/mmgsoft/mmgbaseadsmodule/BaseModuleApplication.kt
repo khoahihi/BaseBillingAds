@@ -2,7 +2,7 @@ package com.mmgsoft.mmgbaseadsmodule
 
 import com.mmgsoft.modules.libs.AdsApplication
 import com.mmgsoft.modules.libs.helpers.BillingType
-import com.mmgsoft.modules.libs.helpers.UseCurrency
+import com.mmgsoft.modules.libs.models.BillingMapper.Companion.mapping
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 
 class BaseModuleApplication : AdsApplication() {
@@ -24,6 +24,10 @@ class BaseModuleApplication : AdsApplication() {
             .updateCurrency("GOLD")
             .updateItem1("")
             .updateItem2("")
+            .updateBillingMapper(
+                "abcd" mapping "5000",
+                "bcde" mapping "10000",
+            )
     }
 
     companion object {

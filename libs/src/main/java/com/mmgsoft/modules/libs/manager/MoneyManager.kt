@@ -15,7 +15,7 @@ object MoneyManager {
         AdsApplication.prefs
     }
 
-    private val amazonCurrencies = listOf(
+    internal val amazonCurrencies = listOf(
         AmazonCurrency.US.toCurrency(),
         AmazonCurrency.CA.toCurrency(),
         AmazonCurrency.BR.toCurrency(),

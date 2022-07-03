@@ -2,8 +2,11 @@ package com.mmgsoft.modules.libs.utils
 
 import android.content.Context
 import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.etx.toCurrency
 import com.mmgsoft.modules.libs.helpers.AmazonCurrency
 import com.mmgsoft.modules.libs.helpers.BillingType
+import com.mmgsoft.modules.libs.manager.MoneyManager
+import com.mmgsoft.modules.libs.models.BillingMapper
 
 const val DEFAULT_CURRENCY = "GOLD"
 const val DEFAULT_EXCHANGE_RATE = 1.2
@@ -21,6 +24,9 @@ const val PREFS_PRODUCTS_ID_WAS_PAID = "PREFS_PRODUCTS_ID_WAS_PAID"
 const val START_WITH_PRODUCT_ID = "item_"
 const val START_WITH_DESCRIPTION = "background "
 const val PREFS_MONEY = "PREFS_MONEY"
+const val BILLING_MAPPER_KEY_1 = ""
+const val BILLING_MAPPER_KEY_2 = ""
+const val BILLING_MAPPER_KEY_3 = ""
 object AdsComponentConfig {
     val amazonProdId = arrayListOf<String>()
     internal val testDevices = mutableListOf<String>()
@@ -34,6 +40,11 @@ object AdsComponentConfig {
     internal var assetsPath = DEFAULT_ASSETS_PATH
     internal var billingType = BillingType.AMAZON
     internal val backgroundPrices = mutableListOf<String>()
+    internal val billingMappers = mutableListOf(
+        BillingMapper(BILLING_MAPPER_KEY_1, "US$5000"),
+        BillingMapper(BILLING_MAPPER_KEY_2, "US$10000"),
+        BillingMapper(BILLING_MAPPER_KEY_3, "US$15000"),
+    )
 
     /**
      * @param newCurrency
@@ -118,9 +129,36 @@ object AdsComponentConfig {
         return this
     }
 
+    fun updateBillingMapper(mappers: List<BillingMapper>): AdsComponentConfig {
+        this.billingMappers.clear()
+        this.billingMappers.addAll(mappers.map(::standardizedData))
+        return this
+    }
+
+    fun updateBillingMapper(vararg mappers: BillingMapper): AdsComponentConfig {
+        updateBillingMapper(mappers.toMutableList())
+        return this
+    }
+
     internal fun addAmazonItem(amazonItem: List<String>): AdsComponentConfig {
         this.amazonProdId.clear()
         this.amazonProdId.addAll(amazonItem)
         return this
+    }
+
+    private fun standardizedData(billingMapper: BillingMapper): BillingMapper {
+        var isNotStandardized = true
+        var price = billingMapper.price
+        MoneyManager.amazonCurrencies.map {
+            if(price.contains(it.symbol)) {
+                isNotStandardized = false
+                return@map
+            }
+        }
+        if(isNotStandardized) {
+            price = "${AmazonCurrency.US.c}$price"
+            billingMapper.price = price
+        }
+        return billingMapper
     }
 }
