@@ -1,6 +1,8 @@
 package com.mmgsoft.modules.libs.manager
 
+import android.app.Activity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -9,6 +11,8 @@ import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.PREFS_CURRENT_BACKGROUND_SELECTED
 
 object BackgroundManager {
+    private const val EXTRA_BACKGROUND_IMAGE = "EXTRA_BACKGROUND_IMAGE"
+
     private val adsPref by lazy {
         AdsApplication.prefs
     }
@@ -105,19 +109,56 @@ object BackgroundManager {
         return randoms[randoms.indices.random()]
     }
 
-    fun loadBackgroundToImageId(view: View, imageId: Int) {
-        getBackground { background ->
-            AssetManager.loadBitmap(background.backgroundPath) {
-                view.findViewById<ImageView>(imageId).setImageBitmap(it)
-            }
-        }
-    }
-
+    /**
+     * @param imageView: ImageView được lựa chọn trên layout
+     * Thực hiện load ảnh trên imageView đã chọn
+     */
     fun loadBackgroundToImageView(imageView: ImageView) {
         getBackground { background ->
             AssetManager.loadBitmap(background.backgroundPath) {
                 imageView.setImageBitmap(it)
             }
         }
+    }
+
+    /**
+     * @param act: Activity hiện tại
+     * Thực hiện load ảnh vào rootView của Activity
+     */
+    fun loadBackground(act: Activity) {
+        val imageID = act.intent.getIntExtra(EXTRA_BACKGROUND_IMAGE, -1)
+
+        val imageView = if(imageID == -1) {
+            createBackgroundViewAndAddToRoot(act, ImageView.ScaleType.CENTER_CROP)
+        } else act.findViewById(imageID)
+
+        loadBackgroundToImageView(imageView)
+    }
+
+    /**
+     * @param act: Activity hiện tại
+     * @param scaleType: scaleType của ảnh
+     * Thực hiện load ảnh vào rootView của Activity
+     */
+    fun loadBackground(act: Activity, scaleType: ImageView.ScaleType) {
+        val imageID = act.intent.getIntExtra(EXTRA_BACKGROUND_IMAGE, -1)
+
+        val imageView = if(imageID == -1) {
+            createBackgroundViewAndAddToRoot(act, scaleType)
+        } else act.findViewById(imageID)
+
+        loadBackgroundToImageView(imageView)
+    }
+
+    /**
+     * @param act
+     * @param st
+     * Tạo ảnh, gán id và lưu vào intent của activity
+     */
+    private fun createBackgroundViewAndAddToRoot(act: Activity, st: ImageView.ScaleType) = ImageView(act).apply {
+        id = View.generateViewId()
+        scaleType = st
+        act.intent.putExtra(EXTRA_BACKGROUND_IMAGE, id)
+        act.window.decorView.findViewById<ViewGroup>(android.R.id.content).addView(this, 0)
     }
 }

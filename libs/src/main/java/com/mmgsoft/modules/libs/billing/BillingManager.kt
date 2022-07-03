@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.amazon.device.iap.model.ProductType
+import com.amazon.device.iap.model.Receipt
 import com.android.billingclient.api.*
 import com.mmgsoft.modules.libs.AdsApplication
 import com.mmgsoft.modules.libs.billing.RetryPolicies.connectionRetryPolicy
@@ -258,14 +260,16 @@ object BillingManager {
                 purchases?.map { purchase ->
                     purchase.products.map { productId ->
                         if(productId.contains(AdsComponentConfig.consumeKey)) {
-                            mAllProductDetails.find { it.productId == productId }?.let { productDetail ->
-                                if(productDetail.productType == BillingClient.ProductType.INAPP) {
-                                    productDetail.oneTimePurchaseOfferDetails?.formattedPrice?.let { money ->
-                                        MoneyManager.addMoney(money)
-                                    }
-                                } else {
-                                    productDetail.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice?.let { money ->
-                                        MoneyManager.addMoney(money)
+                            checkOnAddMoney(productId) {
+                                mAllProductDetails.find { it.productId == productId }?.let { productDetail ->
+                                    if(productDetail.productType == BillingClient.ProductType.INAPP) {
+                                        productDetail.oneTimePurchaseOfferDetails?.formattedPrice?.let { money ->
+                                            MoneyManager.addMoney(money)
+                                        }
+                                    } else {
+                                        productDetail.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice?.let { money ->
+                                            MoneyManager.addMoney(money)
+                                        }
                                     }
                                 }
                             }
@@ -407,6 +411,12 @@ object BillingManager {
             else -> Log.d(TAG, "isSubscriptionSupported(): Error:${billingResult.debugMessage}")
         }
         return iSupported
+    }
+
+    private fun checkOnAddMoney(prodID: String, onNonContains: () -> Unit) {
+        AdsComponentConfig.billingMappers.find { prodID.uppercase().contains(it.productId.uppercase()) }?.let {
+            MoneyManager.addMoney(it.price, 1.0)
+        } ?: onNonContains.invoke()
     }
 
     fun isBuyItem1() = prefs.isBuyItem1()
