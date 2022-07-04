@@ -126,28 +126,30 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                 handleReceiptData(purchaseResponse.receipt)
                 val receipt = purchaseResponse.receipt
 
-                checkOnAddMoney(receipt) {
-                    if (receipt.productType == ProductType.CONSUMABLE) {
-                        productItems.map { prodItem ->
-                            if (prodItem.sku == receipt.sku) {
+                if (receipt.productType == ProductType.CONSUMABLE) {
+                    productItems.map { prodItem ->
+                        if (prodItem.sku == receipt.sku) {
+                            checkOnAddMoney(receipt) {
                                 addMoney(prodItem.price)
-                                return@map
                             }
+                            return@map
                         }
-                    } else{
-                        productItems.map { prodItem ->
-                            val sku = if(receipt.productType == ProductType.SUBSCRIPTION) {
-                                receipt.termSku
-                            } else receipt.sku
+                    }
+                } else{
+                    productItems.map { prodItem ->
+                        val sku = if(receipt.productType == ProductType.SUBSCRIPTION) {
+                            receipt.termSku
+                        } else receipt.sku
 
-                            if (prodItem.sku == sku) {
-                                if (prodItem.sku.contains(AdsComponentConfig.item1)) {
-                                    BillingManager.putIsBilling(PREFS_BILLING_BUY_ITEM_1)
-                                } else if(prodItem.sku.contains(AdsComponentConfig.item2)) {
-                                    BillingManager.putIsBilling(PREFS_BILLING_BUY_ITEM_2)
-                                } else addMoney(prodItem.price, DEFAULT_EXCHANGE_RATE_OTHER)
-                                return@map
+                        if (prodItem.sku == sku) {
+                            if (prodItem.sku.contains(AdsComponentConfig.item1)) {
+                                BillingManager.putIsBilling(PREFS_BILLING_BUY_ITEM_1)
+                            } else if(prodItem.sku.contains(AdsComponentConfig.item2)) {
+                                BillingManager.putIsBilling(PREFS_BILLING_BUY_ITEM_2)
+                            } else checkOnAddMoney(receipt) {
+                                addMoney(prodItem.price, DEFAULT_EXCHANGE_RATE_OTHER)
                             }
+                            return@map
                         }
                     }
                 }
