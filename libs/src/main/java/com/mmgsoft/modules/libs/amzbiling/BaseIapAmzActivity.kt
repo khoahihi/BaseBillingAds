@@ -141,7 +141,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                             receipt.termSku
                         } else receipt.sku
 
-                        if (prodItem.sku == sku) {
+                        if (sku.contains(prodItem.sku)) {
                             if (prodItem.sku.contains(AdsComponentConfig.item1)) {
                                 BillingManager.putIsBilling(PREFS_BILLING_BUY_ITEM_1)
                             } else if(prodItem.sku.contains(AdsComponentConfig.item2)) {
