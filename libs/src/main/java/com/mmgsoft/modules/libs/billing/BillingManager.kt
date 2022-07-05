@@ -5,14 +5,11 @@ import android.app.Activity
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.amazon.device.iap.model.ProductType
-import com.amazon.device.iap.model.Receipt
 import com.android.billingclient.api.*
 import com.mmgsoft.modules.libs.AdsApplication
 import com.mmgsoft.modules.libs.billing.RetryPolicies.connectionRetryPolicy
 import com.mmgsoft.modules.libs.billing.RetryPolicies.resetConnectionRetryPolicyCounter
 import com.mmgsoft.modules.libs.billing.RetryPolicies.taskExecutionRetryPolicy
-import com.mmgsoft.modules.libs.helpers.AdsPrefs
 import com.mmgsoft.modules.libs.helpers.BillingLoadingState
 import com.mmgsoft.modules.libs.helpers.BillingLoadingStateEvent
 import com.mmgsoft.modules.libs.helpers.StateAfterBuy
@@ -122,7 +119,7 @@ object BillingManager {
              productSubsIds: List<String>,
              state: StateAfterBuy = StateAfterBuy.DISABLE,
              item1: String, item2: String) {
-        AdsComponentConfig.updateItem1(item1).updateItem2(item2)
+        AdsComponentConfig.updateInterstitialKey(item1).updateBannerKey(item2)
         init(context, productInAppIds, productSubsIds, state)
     }
 
@@ -202,11 +199,11 @@ object BillingManager {
 
     private fun checkIsBilling() {
         mAllProductDetails.map {
-            if(it.productId.contains(AdsComponentConfig.item1)) {
+            if(it.productId.contains(AdsComponentConfig.interstitialKey)) {
                 putIsBilling(PREFS_BILLING_BUY_ITEM_1)
             }
 
-            if(it.productId.contains(AdsComponentConfig.item2)) {
+            if(it.productId.contains(AdsComponentConfig.bannerKey)) {
                 putIsBilling(PREFS_BILLING_BUY_ITEM_2)
             }
         }

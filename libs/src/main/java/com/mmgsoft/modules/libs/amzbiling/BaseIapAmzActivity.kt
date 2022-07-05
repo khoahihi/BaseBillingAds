@@ -16,7 +16,6 @@ import com.mmgsoft.modules.libs.data.model.db.SubscriptionModel
 import com.mmgsoft.modules.libs.etx.setStatusBarColor
 import com.mmgsoft.modules.libs.etx.setStatusBarTextColorDark
 import com.mmgsoft.modules.libs.helpers.AmazonScreenType
-import com.mmgsoft.modules.libs.manager.MoneyManager
 import com.mmgsoft.modules.libs.manager.MoneyManager.addMoney
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.DEFAULT_EXCHANGE_RATE_OTHER
@@ -54,7 +53,8 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
         super.onResume()
         PurchasingService.getUserData()
         PurchasingService.getPurchaseUpdates(true)
-        PurchasingService.getProductData(allProductSkus.toSet())
+        if(allProductSkus.isNotEmpty())
+            PurchasingService.getProductData(allProductSkus.toSet())
     }
 
     override fun onDestroy() {
@@ -142,9 +142,9 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                         } else receipt.sku
 
                         if (sku.contains(prodItem.sku)) {
-                            if (prodItem.sku.contains(AdsComponentConfig.item1)) {
+                            if (prodItem.sku.contains(AdsComponentConfig.interstitialKey)) {
                                 BillingManager.putIsBilling(PREFS_BILLING_BUY_ITEM_1)
-                            } else if(prodItem.sku.contains(AdsComponentConfig.item2)) {
+                            } else if(prodItem.sku.contains(AdsComponentConfig.bannerKey)) {
                                 BillingManager.putIsBilling(PREFS_BILLING_BUY_ITEM_2)
                             } else checkOnAddMoney(receipt) {
                                 addMoney(prodItem.price, DEFAULT_EXCHANGE_RATE_OTHER)
@@ -200,7 +200,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                         prodItem.isBuy = true
                     }
                     doOnBackground {
-                        AdsApplication.instance.dbHelper?.insertSubscriptionRecord(subscriptionModel)
+                        AdsApplication.dbHelper.insertSubscriptionRecord(subscriptionModel)
                     }
                 }
                 ProductType.ENTITLED -> {
@@ -214,7 +214,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                         prodItem.isBuy = true
                     }
                     doOnBackground {
-                        AdsApplication.instance.dbHelper?.insertEntitlementRecord(entitlementModel)
+                        AdsApplication.dbHelper.insertEntitlementRecord(entitlementModel)
                     }
                 }
             }

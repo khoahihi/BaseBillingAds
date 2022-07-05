@@ -33,7 +33,7 @@ object AssetManager {
      * resize ảnh để tăng performance
      */
     fun loadBitmap(path: String, doWork: (Bitmap) -> Unit) = CoroutineScope(Dispatchers.IO).launch {
-        val ims = AdsApplication.instance.assets.open(path)
+        val ims = AdsApplication.application.assets.open(path)
         val d = Drawable.createFromStream(ims, null)
         val b = (d as BitmapDrawable).bitmap
         val br = b.scale(300, 533)

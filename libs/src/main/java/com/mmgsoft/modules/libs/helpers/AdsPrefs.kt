@@ -12,7 +12,7 @@ import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_2
 
 internal class AdsPrefs {
     private val ctx: Context by lazy {
-        AdsApplication.instance
+        AdsApplication.application
     }
 
     private fun getPrefs() =

@@ -1,19 +1,15 @@
 package com.mmgsoft.modules.libs
 
 import android.app.Application
-import android.content.Intent
-import android.os.Bundle
 import androidx.room.Room
 import com.mmgsoft.modules.libs.ads.AdsManager
 import com.mmgsoft.modules.libs.amzbiling.AppConstant
 import com.mmgsoft.modules.libs.billing.BillingManager
 import com.mmgsoft.modules.libs.data.local.db.AppDatabase
 import com.mmgsoft.modules.libs.data.local.db.AppDbHelper
-import com.mmgsoft.modules.libs.data.local.db.DbHelper
 import com.mmgsoft.modules.libs.helpers.AdsPrefs
 import com.mmgsoft.modules.libs.helpers.BillingType
 import com.mmgsoft.modules.libs.helpers.StateAfterBuy
-import com.mmgsoft.modules.libs.helpers.UseCurrency
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig.testDevices
 import com.mmgsoft.modules.libs.utils.AnnotationConverter
@@ -56,10 +52,9 @@ abstract class AdsApplication : Application() {
         AnnotationConverter.get(T::class.java)
     }
 
-    var dbHelper: DbHelper? = null
     override fun onCreate() {
         super.onCreate()
-        instance = this
+        application = this
         prefs = AdsPrefs()
         AdsComponentConfig.updateBillingType(billingType)
         addConfig()
@@ -78,7 +73,8 @@ abstract class AdsApplication : Application() {
     }
 
     companion object {
-        lateinit var instance: AdsApplication
+        internal lateinit var application: Application
+        internal lateinit var dbHelper: AppDbHelper
         internal lateinit var prefs: AdsPrefs
     }
 }

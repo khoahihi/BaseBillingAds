@@ -2,7 +2,6 @@ package com.mmgsoft.modules.libs.utils
 
 import android.content.Context
 import com.mmgsoft.modules.libs.AdsApplication
-import com.mmgsoft.modules.libs.etx.toCurrency
 import com.mmgsoft.modules.libs.helpers.AmazonCurrency
 import com.mmgsoft.modules.libs.helpers.BackgroundLoadOn
 import com.mmgsoft.modules.libs.helpers.BillingType
@@ -12,8 +11,8 @@ import com.mmgsoft.modules.libs.models.BillingMapper
 const val DEFAULT_CURRENCY = "GOLD"
 const val DEFAULT_EXCHANGE_RATE = 1.2
 const val DEFAULT_EXCHANGE_RATE_OTHER = 1.6
-const val DEFAULT_ADS_ITEM_1 = "sub.pkg.interstitial"
-const val DEFAULT_ADS_ITEM_2 = "sub.pkg.banner"
+const val DEFAULT_ADS_INTERSTITIAL_KEY = "sub.pkg.interstitial"
+const val DEFAULT_ADS_BANNER_KEY = "sub.pkg.banner"
 const val DEFAULT_ADS_CONSUME = "inapp.consum"
 const val DEFAULT_ASSETS_PATH = "backgrounds"
 const val ADS_PREFS_NAME = "ADS_PREFS_NAME"
@@ -36,10 +35,10 @@ object AdsComponentConfig {
     internal const val weightingPrice = 100
     internal var currency = DEFAULT_CURRENCY
     internal var exchangeRate = DEFAULT_EXCHANGE_RATE
-    internal var item1 = DEFAULT_ADS_ITEM_1
-    internal var item2 = DEFAULT_ADS_ITEM_2
+    internal var interstitialKey = DEFAULT_ADS_INTERSTITIAL_KEY
+    internal var bannerKey = DEFAULT_ADS_BANNER_KEY
     internal var consumeKey = DEFAULT_ADS_CONSUME
-    internal var otherAppContext: Context = AdsApplication.instance
+    internal var otherAppContext: Context = AdsApplication.application
     internal var assetsPath = DEFAULT_ASSETS_PATH
     internal var billingType = BillingType.AMAZON
     internal var loadBackgroundOn = BackgroundLoadOn.ON_RESUME
@@ -73,8 +72,8 @@ object AdsComponentConfig {
      * @param newItem1
      * Endpoint kiểm tra đã mua gói để ẩn interstitial
      */
-    fun updateItem1(newItem1: String): AdsComponentConfig {
-        this.item1 = newItem1
+    fun updateInterstitialKey(newItem1: String): AdsComponentConfig {
+        this.interstitialKey = newItem1
         return this
     }
 
@@ -82,8 +81,8 @@ object AdsComponentConfig {
      * @param newItem2
      * Endpoint kiểm tra đã mua gói để ẩn banner
      */
-    fun updateItem2(newItem2: String): AdsComponentConfig {
-        this.item2 = newItem2
+    fun updateBannerKey(newItem2: String): AdsComponentConfig {
+        this.bannerKey = newItem2
         return this
     }
 
