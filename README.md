@@ -12,7 +12,49 @@ allprojects {
 ```sh
 implementation 'com.github.User:Repo:$lasted_version'
 ```
-
+## Cấu hình GoogleID và keyStore
+```shell
+android {
+    ...
+    signingConfigs {
+        production {
+            keyAlias 'als_pkg_keystore_release_product'
+            keyPassword 'pkg_keystore_release_product'
+            storeFile file('keyStore/pkg_keystore_release_product.jks')
+            storePassword 'pkg_keystore_release_product'
+        } 
+        develop {
+            keyAlias 'dev_pkg_keystore_release_product'
+            keyPassword 'dev_pkg_keystore_release_product'
+            storeFile file('keyStore/dev_pkg_keystore_release_product.jks')
+            storePassword 'dev_pkg_keystore_release_product'
+        }
+    }
+    flavorDimensions "phone"
+    productFlavors {
+        production {
+            dimension "phone"
+            versionName "1.0"
+            versionCode 1
+            signingConfig signingConfigs.production
+            resValue "string", "ADMOB_APP_ID", "ca-app-pub-4441205939351023~5650050109"
+            resValue "string", "banner_ad_unit_id", "ca-app-pub-3940256099942544/6300978111"
+            resValue "string", "interstial_ad_unit_id", "ca-app-pub-3940256099942544/1033173712"
+        }
+        dev {
+            dimension "phone"
+            versionName "dev-1.0.0"
+            versionCode 1
+            signingConfig signingConfigs.develop
+            resValue "string", "ADMOB_APP_ID", "ca-app-pub-4441205939351023~5650050109"
+            resValue "string", "banner_ad_unit_id", "ca-app-pub-3940256099942544/6300978111"
+            resValue "string", "interstial_ad_unit_id", "ca-app-pub-3940256099942544/1033173712"
+        }
+    }
+    ...
+}
+```
+Thay đổi **pkg = PackageName**
 ## Base Production ID
 ```sh
 interface Google {
@@ -203,3 +245,20 @@ AmazonScreenType này để tách loại subscription và loại buy Gold ra là
 ChangeBackgroundActivity.open(context)
 ```
 ## Quy trình sản xuất app
+1. Thêm library Ads vào gradle
+2. Thêm Google ID vào manifest
+3. Thêm cấu hình GoogleID và keyStore
+4. Thay đổi packageName
+5. Thay đổi appName
+6. Thay đổi resResource
+7. refactor code và fileName của resource ảnh
+8. Tạo keyStore theo cấu hình
+9. Tạo application hoặc sửa application theo các mục trên
+10. Thêm action mở purchase và mở changeBackground
+11. Kiểm tra các màn hình đã để background transparent chưa 
+12. Thêm forceShowInterstitial và banner vào layout
+13. Thêm file .pem vào assets file (Chỉ với BillingType = Amazon)
+14. Build lên và kiểm tra lại app
+15. chụp ảnh. 4 ảnh device 7inch, 2 ảnh device 10inch, 3 ảnh device phone
+16. Build app.bundle
+### Lưu ý: với app google/amazon cần tạo ra 2 branch khác nhau, packageName và appName phải change khác nhau
