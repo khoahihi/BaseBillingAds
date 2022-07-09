@@ -179,14 +179,14 @@ override val billingType: BillingType
 ```shell
 <meta-data
     android:name="com.google.android.gms.ads.APPLICATION_ID"
-    android:value="@string/admob_appid" />
+    android:value="@string/ADMOB_APP_ID" />
 ```
 ## Interstitial 
 ### 1. Case extend AdsApplication
-Gọi application.adsManager.forceShowInterstitial()
+Gọi application.adsManager.forceShowInterstitial(...)
 VD:
 ```shell
-ExampleAdsComponentsApplication.instance.adsComponents.adsManager.forceShowInterstitial(this, getString(R.string.splash_id)) {
+ExampleAdsComponentsApplication.instance.adsComponents.adsManager.forceShowInterstitial(this, getString(R.string.interstial_ad_unit_id)) {
   // TODO: do something
 }
 ```
@@ -205,7 +205,7 @@ VD:
     app:layout_constraintBottom_toBottomOf="parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:ba_adsUnitId="@string/banner_id"
+    app:ba_adsUnitId="@string/banner_ad_unit_id"
     app:ba_autoLoad="true"/>
 ```
 ## Billing Screen
