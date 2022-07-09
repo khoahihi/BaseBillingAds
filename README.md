@@ -251,7 +251,7 @@ ChangeBackgroundActivity.open(context)
 4. Thay đổi packageName
 5. Thay đổi appName
 6. Thay đổi resResource
-7. refactor code và fileName của resource ảnh
+7. Refactor code và fileName của resource ảnh
 8. Tạo keyStore theo cấu hình
 9. Tạo application hoặc sửa application theo các mục trên
 10. Thêm action mở purchase và mở changeBackground
