@@ -10,7 +10,7 @@ allprojects {
 ```
 ## Gradle app
 ```sh
-implementation 'com.github.User:Repo:$lasted_version'
+implementation 'com.github.khoahihi:BaseBillingAds:$lasted_version'
 ```
 ## Cấu hình GoogleID và keyStore
 ```shell
