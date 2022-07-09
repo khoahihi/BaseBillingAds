@@ -248,17 +248,17 @@ ChangeBackgroundActivity.open(context)
 1. Thêm library Ads vào gradle
 2. Thêm Google ID vào manifest
 3. Thêm cấu hình GoogleID và keyStore
-4. Thay đổi packageName
-5. Thay đổi appName
-6. Thay đổi resResource
-7. Refactor code và fileName của resource ảnh
-8. Tạo keyStore theo cấu hình
-9. Tạo application hoặc sửa application theo các mục trên
-10. Thêm action mở purchase và mở changeBackground
-11. Kiểm tra các màn hình đã để background transparent chưa 
-12. Thêm forceShowInterstitial và banner vào layout
-13. Thêm file .pem vào assets file (Chỉ với BillingType = Amazon)
-14. Build lên và kiểm tra lại app
-15. chụp ảnh. 4 ảnh device 7inch, 2 ảnh device 10inch, 3 ảnh device phone
-16. Build app.bundle
+4. Thay đổi packageName, appName, resResource
+5. Thay đổi ADMOB_APP_ID/banner_ad_unit_id/interstial_ad_unit_id của productFlavors -> production
+6. Refactor code và fileName của resource ảnh
+7. Tạo keyStore theo cấu hình
+8. Tạo application hoặc sửa application theo các mục trên
+9. Thêm action mở purchase và mở changeBackground
+10. Kiểm tra các màn hình đã để background transparent chưa 
+11. Thêm forceShowInterstitial và banner vào layout
+12. Thêm file .pem vào assets file (Chỉ với BillingType = Amazon)
+13. Build lên và kiểm tra lại app
+14. chụp ảnh. 4 ảnh device 7inch, 2 ảnh device 10inch, 3 ảnh device phone -> đẩy lên drive
+15. Build app.bundle -> đẩy lên drive
+16. Tạo file txt lưu lại toàn bộ BillingID của Google, Amazon và cấu hình bảng giá trong application -> đẩy lên drive
 ### Lưu ý: với app google/amazon cần tạo ra 2 branch khác nhau, packageName và appName phải change khác nhau
