@@ -224,7 +224,7 @@ enum class ActionBarTheme {
 }
 ```
 - colorTitle: Đặt màu chữ cho toolbar
-- ColorHeader: Đặt màu nền cho toolbar
+- colorHeader: Đặt màu nền cho toolbar
 ## Đối với Billing Amazon
 Sử dụng AmazonIapActivity
 VD:
