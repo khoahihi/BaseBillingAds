@@ -20,7 +20,7 @@ class ExampleAdsComponentsApplication : Application() {
             .withProdSubs("")             /** optional **/
             .withProdAmazon("")           /** optional **/
             .withBillingState(StateAfterBuy.DISABLE)  /** optional **/
-            .withBilling(BillingType.AMAZON)          /** required **/
+            .withBilling(BillingType.GOOGLE)          /** required **/
             .build(::addConfigs)                      /** required **/
     }
 
