@@ -71,7 +71,7 @@ class AdsManager {
         InterstitialAd.load(act, adsUnitId, AdRequest.Builder().build(), object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(p0: LoadAdError) {
                 super.onAdFailedToLoad(p0)
-                dialog.hide()
+                dialog.dismiss()
                 adClosed.invoke()
             }
 
@@ -80,7 +80,7 @@ class AdsManager {
                 p0.fullScreenContentCallback = object : FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
                         super.onAdDismissedFullScreenContent()
-                        dialog.hide()
+                        dialog.dismiss()
                         adClosed.invoke()
                     }
                 }

@@ -9,6 +9,7 @@ data class Background(
     val backgroundPath: String,
     var isBuy: Boolean,
     var isSelected: Boolean = false,
+    var isTriggerLoadBitmap: Boolean = false,
     var bm: Bitmap? = null
 ) {
     override fun equals(other: Any?): Boolean {

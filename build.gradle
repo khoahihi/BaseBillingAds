@@ -5,9 +5,7 @@ buildscript {
         google()
     }
 
-    dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.3'
-    }
+
 }
 
 plugins {
