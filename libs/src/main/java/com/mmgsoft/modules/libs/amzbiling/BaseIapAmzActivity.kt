@@ -2,8 +2,6 @@ package com.mmgsoft.modules.libs.amzbiling
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import butterknife.ButterKnife
-import butterknife.Unbinder
 import com.amazon.device.iap.PurchasingListener
 import com.amazon.device.iap.PurchasingService
 import com.amazon.device.iap.model.*
@@ -33,7 +31,6 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
     abstract val resLayout: Int
     abstract fun initData()
     abstract fun notifyUpdateListView()
-    private var mUnbinder: Unbinder? = null
     protected abstract val screenType: AmazonScreenType
     protected val productItems = arrayListOf<ProductItem>()
 
@@ -44,7 +41,6 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
         allProductSkus.clear()
         allProductSkus.addAll(allSkus)
         setContentView(resLayout)
-        mUnbinder = ButterKnife.bind(this)
         PurchasingService.registerListener(this, this)
         initData()
     }
@@ -55,11 +51,6 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
         PurchasingService.getPurchaseUpdates(true)
         if(allProductSkus.isNotEmpty())
             PurchasingService.getProductData(allProductSkus.toSet())
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mUnbinder?.unbind()
     }
 
     override fun onUserDataResponse(userDataResponse: UserDataResponse) {

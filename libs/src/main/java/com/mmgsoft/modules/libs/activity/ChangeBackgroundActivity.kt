@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.adapters.BackgroundAdapter
@@ -27,6 +28,8 @@ import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.START_WITH_DESCRIPTION
 import com.mmgsoft.modules.libs.utils.START_WITH_PRODUCT_ID
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class ChangeBackgroundActivity : BaseActivity() {
     override val layoutResId: Int
@@ -55,7 +58,7 @@ class ChangeBackgroundActivity : BaseActivity() {
     }
 
     private val mBackgroundAdapter: BackgroundAdapter by lazy {
-        BackgroundAdapter(::onBackgroundItemClicked)
+        BackgroundAdapter(lifecycleScope, ::onBackgroundItemClicked)
     }
 
     private val imGold: CircleImageView by lazy {
@@ -89,24 +92,43 @@ class ChangeBackgroundActivity : BaseActivity() {
         val backgrounds = getBackgrounds()
         updateBillingStatus(backgrounds)
         updateSelectBackground(backgrounds)
-        mBackgroundAdapter.setData(backgrounds)
+        lifecycleScope.launch {
+            delay(500)
+            mBackgroundAdapter.setData(backgrounds)
+        }
         imGold.setOnClickListener {
-            if(backgroundMotion.currentState == R.id.start) {
+            if (backgroundMotion.currentState == R.id.start) {
                 backgroundMotion.transitionToEnd()
             } else backgroundMotion.transitionToStart()
         }
 
         backgroundMotion.setTransitionListener(object : MotionLayout.TransitionListener {
-            override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) {}
+            override fun onTransitionStarted(
+                motionLayout: MotionLayout?,
+                startId: Int,
+                endId: Int
+            ) {
+            }
 
-            override fun onTransitionChange(motionLayout: MotionLayout?, startId: Int, endId: Int, progress: Float) {
+            override fun onTransitionChange(
+                motionLayout: MotionLayout?,
+                startId: Int,
+                endId: Int,
+                progress: Float
+            ) {
             }
 
             override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
                 updateCurrentMoney()
             }
 
-            override fun onTransitionTrigger(motionLayout: MotionLayout?, triggerId: Int, positive: Boolean, progress: Float) {}
+            override fun onTransitionTrigger(
+                motionLayout: MotionLayout?,
+                triggerId: Int,
+                positive: Boolean,
+                progress: Float
+            ) {
+            }
         })
 
         imBack.setOnClickListener {
@@ -126,8 +148,8 @@ class ChangeBackgroundActivity : BaseActivity() {
     }
 
     private fun onBackgroundItemClicked(background: Background) {
-        if(BackgroundManager.isWasPaid(background)) {
-            if(background.productId == BackgroundManager.getBackgroundSelected()?.productId) {
+        if (BackgroundManager.isWasPaid(background)) {
+            if (background.productId == BackgroundManager.getBackgroundSelected()?.productId) {
                 BackgroundManager.saveBackgroundSelected(null)
                 mBackgroundAdapter.updateSelected(background, false)
             } else if (BackgroundManager.saveBackgroundSelected(background)) {
@@ -135,8 +157,8 @@ class ChangeBackgroundActivity : BaseActivity() {
             } else showAlertMessage(getString(R.string.change_background_failed))
         } else {
             BuyBackgroundBottomSheet(background) {
-                if(MoneyManager.buyBackground(background)) {
-                    if(addWasPaidBackground(background)) {
+                if (MoneyManager.buyBackground(background)) {
+                    if (addWasPaidBackground(background)) {
                         mBackgroundAdapter.updateBilling(background)
                         updateCurrentMoney()
                         showToast(getString(R.string.buy_success))
@@ -159,7 +181,7 @@ class ChangeBackgroundActivity : BaseActivity() {
     private fun updateSelectBackground(prev: List<Background>) {
         BackgroundManager.getBackgroundSelected()?.let { background ->
             prev.map {
-                if(it.productId == background.productId) {
+                if (it.productId == background.productId) {
                     it.isSelected = true
                     return@map
                 }
@@ -175,22 +197,24 @@ class ChangeBackgroundActivity : BaseActivity() {
         tvCurrency.text = AdsComponentConfig.currency
         tvBuyGold.text = "Buy ${AdsComponentConfig.currency}"
 
-        tvGold.visibility = if(isShowBuy) View.GONE else View.VISIBLE
-        tvCurrency.visibility = if(isShowBuy) View.GONE else View.VISIBLE
+        tvGold.visibility = if (isShowBuy) View.GONE else View.VISIBLE
+        tvCurrency.visibility = if (isShowBuy) View.GONE else View.VISIBLE
     }
 
     private fun getBackgrounds() = AssetManager.loadListFilesOfAsset(
-        AdsComponentConfig.otherAppContext, AdsComponentConfig.assetsPath).mapIndexed { index, s ->
+        AdsComponentConfig.otherAppContext, AdsComponentConfig.assetsPath
+    ).mapIndexed { index, s ->
         val p = index + 1
         Background(
             getBackgroundPrice(index),
             "$START_WITH_PRODUCT_ID$s",
             "$START_WITH_DESCRIPTION$p",
-            getBackgroundPath(AdsComponentConfig.assetsPath, s), false)
+            getBackgroundPath(AdsComponentConfig.assetsPath, s), false
+        )
     }
 
     private fun getBackgroundPrice(index: Int): String {
-        return if(backgroundPrices.size > index) {
+        return if (backgroundPrices.size > index) {
             backgroundPrices[index]
         } else {
             val next = index + 1
@@ -199,6 +223,6 @@ class ChangeBackgroundActivity : BaseActivity() {
     }
 
     private fun getBackgroundPath(assetPath: String, fileName: String): String {
-        return if(assetPath.isBlank()) fileName else "$assetPath/$fileName"
+        return if (assetPath.isBlank()) fileName else "$assetPath/$fileName"
     }
 }

@@ -4,7 +4,7 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import butterknife.ButterKnife;
+
 
 /**
  * Created by khoahihi on 1/2/2018.
@@ -22,7 +22,6 @@ public abstract class BaseRecyclerViewHolder<T> extends RecyclerView.ViewHolder 
 
 	public BaseRecyclerViewHolder(View itemView) {
 		super(itemView);
-		ButterKnife.bind(this, itemView);
 	}
 
 	public T getmModel() {
